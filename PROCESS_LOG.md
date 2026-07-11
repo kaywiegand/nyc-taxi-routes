@@ -13,8 +13,8 @@
 | Typ | DA — Data Analysis |
 | Herkunft | StackFuel Übungsprojekt (Modul 2 / Kapitel 7) — Original-Aufgabenstellung: [`docs/infos.md`](docs/infos.md) |
 | Erstellt | 2026-04-21 (ursprünglicher Scaffold) · Fundament-Nachzug 2026-07-11 |
-| Status | 🟢 Analyse + Insights vollständig — alle 9 Business-Fragen aus `docs/infos.md` beantwortet |
-| Nächster Schritt | `/project-case check` — Portfolio-Aufbereitung |
+| Status | 🟢 Fundament + Analyse abgeschlossen, Portfolio-Aufbereitung läuft — Story-Phase fertig, Slides offen |
+| Nächster Schritt | `/project-case slides` — Dialog-Modus, dann `/project-case report` |
 
 ---
 
@@ -62,5 +62,22 @@
 - ROADMAP Phase 4 + 5 auf ✅ gesetzt, BACKLOG #1/#2 nach „Erledigt" verschoben
 
 **Nächster Schritt:** `/project-case check` — Portfolio-Aufbereitung starten.
+
+---
+
+### 2026-07-11 – Re-Review (JA) + /project-case check + story
+
+**Kontext:** Nach Content-Fertigstellung erneut `/project-review` angefragt, um den Effekt der Fixes zu prüfen.
+
+**Was gemacht wurde:**
+- **`/project-review` erneut ausgeführt → JA** (vorher BEDINGT): alle 5 Notebooks fehlerfrei (0 Error-Outputs), Key Visual im README, MD-Kohärenz weiterhin durchgängig, Git sauber. Einzige Restpunkte: `public/index.html` noch Platzhalter (erwartbar vor `/project-case`) und die bereits dokumentierten kosmetischen BACKLOG-Punkte.
+- **`/project-case check`** (Skill: `wgnd-skills/project-case`) durchgeführt: 8-Dimensionen-Scorecard — Story & Relevanz ✅, Struktur & Files ⚠️ (kein `public/*.html` > 50 KB), Kohärenz ✅, Analyse-Qualität ✅, ML-Qualität n.a., Code & Architektur ✅, Artefakte ⚠️ (kein Hub-Inhalt, `portfolio.md` fehlte noch), Reproduzierbarkeit ✅. Ergebnis: **Bereit für Story-Phase: JA** — Lücken sind exakt das, was `story`/`slides`/`report` produzieren, kein inhaltlicher Mangel.
+- **`/project-case story`** ausgeführt: `public/md/portfolio.md` geschrieben — Kernthese, 6 Key Findings (JFK-Anteil, Umsatz-Premium, Wochentag-Skew, Uhrzeit-Muster, Routen-Dominanz, Cleaning-Impact), 5 Empfehlungen, Figures-Inventar. Alle Zahlen 1:1 aus `03_analysis.ipynb`/`02_preparation.ipynb` — keine erfundenen Werte. Kernthese von Kay bestätigt.
+- Commits: `docs: PROJECTS — ...` (Workspace-Ebene, bereits vorher), `docs: project-case story — portfolio.md ...`
+
+**Bekannt: kein Git-Remote konfiguriert** — `git remote -v` liefert nichts. Für einen späteren Push muss zuerst ein Remote (GitHub-Repo) angelegt/verknüpft werden.
+
+**Nächster Schritt (nächste Session, von Kay explizit als eigener Task benannt):**
+`/project-case slides` — Dialog-Modus: StoryView Kapitel für Kapitel aufbauen (Bezug auf `portfolio.md`-Findings), dann Overview/TechView per Wiederverwendung ableiten, Tabellen-Review vor dem Schreiben. Danach `/project-case report` (mechanisch: `make portfolio` — archive → json → html → index → md → matrix).
 
 ---
