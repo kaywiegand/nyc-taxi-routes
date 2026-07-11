@@ -13,8 +13,8 @@
 | Typ | DA — Data Analysis |
 | Herkunft | StackFuel Übungsprojekt (Modul 2 / Kapitel 7) — Original-Aufgabenstellung: [`docs/infos.md`](docs/infos.md) |
 | Erstellt | 2026-04-21 (ursprünglicher Scaffold) · Fundament-Nachzug 2026-07-11 |
-| Status | 🟢 EDA + Preparation abgeschlossen, Analyse teilweise beantwortet, Insights offen |
-| Nächster Schritt | Offene Business-Fragen 4–7 (Visualisierungen Pickup-Standorte, Wochentag/Uhrzeit-Anteile) + Empfehlung in `04_insights.ipynb` |
+| Status | 🟢 Analyse + Insights vollständig — alle 9 Business-Fragen aus `docs/infos.md` beantwortet |
+| Nächster Schritt | `/project-case check` — Portfolio-Aufbereitung |
 
 ---
 
@@ -43,10 +43,24 @@
 - `reports/` (alte Konvention) nach `public/` migriert (aktuelle Konvention: `public/img/`, `public/md/`, `public/index.html`).
 
 **Bekannte offene Punkte (Details: `BACKLOG.md`):**
-- Business-Fragen 4–7 aus `docs/infos.md` (Pickup-Standort-Visualisierung, Wochentag-/Uhrzeit-Anteile JFK vs. Gesamt) noch nicht bearbeitet
-- `04_insights.ipynb` ist inhaltlich noch ein Stub — Executive Summary + Empfehlung ausstehend
 - Datenexport-Dateiname `ny-taxi-routes_prep.parquet` (in `02_preparation.ipynb`/`03_analysis.ipynb`) nutzt noch die alte Slug-Schreibweise ohne "c" — kosmetisch, kein funktionaler Bug
 
 **Nächster Schritt:** `/project-review` ausführen, danach je nach Ergebnis `/project-case check`.
+
+---
+
+### 2026-07-11 – Review (BEDINGT) + Content-Fertigstellung
+
+**Kontext:** `/project-review` ergab BEDINGT — Fundament solide, aber Kernfrage nur zu 3/9 Aufgaben beantwortet, kein Key Visual im README, ein unaufgelöster Notebook-Fehler.
+
+**Was gemacht wurde:**
+- `01_exploration.ipynb` Cell 39 gefixt (`total_amount` existierte nicht in den Rohdaten — durch `fare_amount + tip_amount` + `is_weekend`-Split ersetzt, Logik standalone gegen die echten Daten verifiziert)
+- Beim Versuch, das komplette Notebook neu auszuführen: **wgnd-Toolkit API-Drift entdeckt** — `cfg.PALETTE_DIVERGENT` existiert in der aktuell gepinnten `wgnd@main`-Version nicht mehr (Cell 37 schlägt bei Re-Run fehl, obwohl gespeicherte Outputs von einem älteren wgnd-Stand vorhanden sind). Dokumentiert in `BACKLOG.md` #5 — potenziell relevant für alle Projekte mit ungepinnter `wgnd @ git+...@main`-Dependency.
+- Business-Fragen 4–7 aus `docs/infos.md` umgesetzt in `03_analysis.ipynb`: Pickup-Standort-Karte, JFK-Anteil pro Wochentag (Montag 2,60 % höchster, Samstag 1,44 % niedrigster), Wochentags-Verteilung Gesamt vs. JFK, Uhrzeit-Verteilung Gesamt vs. JFK — Notebook komplett via `nbconvert --execute` durchgelaufen, alle Outputs echt (keine erfundenen Zahlen)
+- `04_insights.ipynb` geschrieben: Executive Summary + 5 evidenzbasierte Empfehlungen (Wochentag-/Uhrzeit-Gewichtung für Flottenplanung). Keine absolute Stückzahl möglich — Datensatz enthält keine Gesamtflottengröße (BACKLOG #7)
+- README aktualisiert: Key Visual eingebettet, TL;DR + Results + Recommendations mit den finalen Zahlen befüllt, Status-Badge auf „Analysis complete"
+- ROADMAP Phase 4 + 5 auf ✅ gesetzt, BACKLOG #1/#2 nach „Erledigt" verschoben
+
+**Nächster Schritt:** `/project-case check` — Portfolio-Aufbereitung starten.
 
 ---
