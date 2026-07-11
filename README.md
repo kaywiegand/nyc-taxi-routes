@@ -1,133 +1,225 @@
 # NYC Taxi Routes
 
-> **Typ:** DA &nbsp;|&nbsp; **Erstellt:** 2026-07-11 &nbsp;|&nbsp; **Version:** 0.1.0
+**How many taxis should an NYC operator station at JFK airport? — 300k trips, 2016 Yellow Taxi data.**
+
+![Python](https://img.shields.io/badge/Python-3.10-blue)
+![Pandas](https://img.shields.io/badge/Pandas-2.0+-orange)
+![Type](https://img.shields.io/badge/Type-Data%20Analysis-lightgrey)
+![Status](https://img.shields.io/badge/Status-Analysis%20in%20progress-yellow)
 
 ---
 
-## Schnellstart
+## TL;DR
 
-### 1. Virtuelle Umgebung erstellen & aktivieren
+**Target:** share of trips departing from JFK airport — out of all recorded taxi trips · **Scope:** NYC, 2016, 300k trips
 
-```bash
-uv venv
-source .venv/bin/activate   # Mac/Linux
-.venv\Scripts\activate      # Windows
-```
-
-### 2. Dependencies + Projektpaket installieren
-
-```bash
-uv pip install -e ".[da]"
-```
-
-### 3. Jupyter Kernel registrieren
-
-```bash
-python -m ipykernel install --user --name nyc_taxi_routes --display-name "Python (nyc_taxi_routes)"
-```
-
-Oder einfach: `make setup && make kernel`
-
-### 4. Los geht's!
-
-Oeffne `notebooks/00_introduction.ipynb` und fange an.
+- Only **1.93%** of all trips depart from JFK (5,649 of 293,369 cleaned trips) — a small slice of total volume.
+- Trips touching JFK (either pickup or dropoff) total **2.6%** of all trips (7,613 trips) but roughly **10%** of total fare revenue — a JFK trip earns nearly 4× an average trip.
+- The vast majority of business (97.2% of trips, 83.8% of distance) stays entirely within the NYC metro area — JFK is a small but high-value niche.
+- Weekday/hourly breakdown of JFK demand is the open next step (see [Roadmap](ROADMAP.md)) — needed before a concrete fleet-sizing recommendation.
 
 ---
 
-## Projektstruktur
+## Where to start
 
-```
-nyc-taxi-routes/
-|
-+-- PROCESS_LOG.md          # Projektverlauf & AI-Kontext-Einstieg
-+-- ROADMAP.md              # Phasen & offene Tasks
-+-- CLAUDE.md               # Claude Code Anweisungen
-+-- README.md
-+-- pyproject.toml          # Paketkonfiguration & Dependencies
-+-- Makefile                # Shortcuts (make setup, make kernel, ...)
-+-- .gitignore
-|
-+-- data/                   # NICHT in Git! (.gitignore)
-|   +-- raw/                # Rohdaten - NIEMALS veraendern!
-|   +-- interim/            # Zwischenergebnisse
-|   +-- processed/          # Finale, analysefertige Daten
-|
-+-- notebooks/
-|   +-- 00_introduction.ipynb
-|   +-- 01_exploration.ipynb
-|   +-- 02_preparation.ipynb
-|   +-- 03_analysis.ipynb
-|   +-- 04_insights.ipynb
-|
-+-- src/nyc_taxi_routes/     # Python-Paket (importierbar nach uv install)
-|   +-- config.py           # Zentrale Pfade & Konstanten
-|   +-- settings.py         # Plot-Theme, Logging
-|   +-- notebook.py         # Zentraler Import-Einstieg fuer Notebooks
-|   +-- utils.py            # Hilfsfunktionen
-|   +-- data/
-|   +-- features/
-|   +-- visualization/
-|   +-- analytics/
-|
-+-- tests/
-+-- public/
-    +-- index.html
-    +-- img/
-    +-- md/
-```
+| You are… | Start here |
+| :--- | :--- |
+| New to the project | [`00_introduction`](notebooks/00_introduction.ipynb) — scenario, data dictionary, geo bounds |
+| Looking for the JFK finding | [`03_analysis`](notebooks/03_analysis.ipynb) — route breakdown, JFK departure share |
+| Looking for the pipeline | [`02_preparation`](notebooks/02_preparation.ipynb) — cleaning + feature engineering |
+
+---
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Problem Statement](#problem-statement)
+- [Dataset](#dataset)
+- [Approach](#approach)
+- [Results](#results)
+- [Notebooks](#notebooks)
+- [Tech Stack](#tech-stack)
+- [Reports & Artifacts](#reports--artifacts)
+- [Setup](#setup)
+- [Author](#author)
+
+---
+
+## Project Overview
+
+Originally a [StackFuel](https://stackfuel.com) practice project (Module 2 / Chapter 7): analyze a real
+2016 NYC Yellow Taxi trip dataset to answer a concrete operational question for a taxi fleet operator.
+JFK airport sits far from Manhattan's core business district — taxis that drop passengers there take a
+long time to become available again for other areas, but airport-bound passengers tend to travel longer,
+more lucrative routes. The operator needs to know how many taxis to station at JFK.
+
+| Phase | Scope | Where |
+| :--- | :--- | :--- |
+| **Data Preparation** | Cleaning (error masks + business-scope masks), feature engineering (geo-routes, economics, time segments) | [`02_preparation`](notebooks/02_preparation.ipynb) |
+| **Analysis** | Route classification (JFK/NYC/Other), departure share | [`03_analysis`](notebooks/03_analysis.ipynb) |
+| **Insights** | Weekday/hourly breakdown, fleet-sizing recommendation | [`04_insights`](notebooks/04_insights.ipynb) — open, see [Roadmap](ROADMAP.md) |
+
+---
+
+## Problem Statement
+
+**Core question:** what share of trips depart from JFK — overall, by weekday, and by hour — and what
+does that imply for how many taxis should wait at the airport?
+
+| Sub-question | Status |
+| :--- | :---: |
+| 1. Load, inspect, clean the data | ✅ |
+| 2. Filter to relevant scope | ✅ |
+| 3. JFK departure share overall | ✅ — 1.93% |
+| 4. Visualize pickup locations across NYC | ⬜ |
+| 5. JFK departure share by weekday | ⬜ |
+| 6. Weekday distribution — overall vs. JFK | ⬜ |
+| 7. Hourly distribution — overall vs. JFK | ⬜ |
+| 8. Custom visualizations | ⬜ |
+| 9. Final recommendation | ⬜ |
+
+→ Full original task description: [docs/infos.md](docs/infos.md)
+
+---
+
+## Dataset
+
+**Source:** `2016_Yellow_Taxi_prepared.csv` — provided by StackFuel for this exercise
+
+| Property | Value |
+| :--- | :--- |
+| Rows (raw) | 300,000 |
+| Rows (after cleaning) | 293,369 |
+| Columns (raw) | 12 |
+| Period | 2016 |
+| City | New York City |
+
+**Columns:** `pickup_weekday` · `pickup_hour` · `pickup_longitude/latitude` · `dropoff_longitude/latitude` ·
+`passenger_count` · `trip_distance` · `fare_amount` · `tip_amount` · `tolls_amount` · `payment_type`
+→ full data dictionary: [`00_introduction.ipynb`](notebooks/00_introduction.ipynb)
+
+**Geo bounds** (used to classify JFK vs. NYC vs. Other, see `nyc_taxi_routes.utils.JFK`/`.NYC`):
+
+| Area | lat_min | lat_max | lon_min | lon_max |
+| :--- | :---: | :---: | :---: | :---: |
+| JFK | 40.62666 | 40.66018 | -73.80822 | -73.76599 |
+| NYC | 40.5774 | 40.9176 | -74.15 | -73.7004 |
+
+**Cleaning removed 6,631 rows (2.2%):** 24 exact duplicates · fare/tip outside plausible range (Finance) ·
+passenger count / trip distance outside plausible range (Physics) · coordinates outside NYC bounds (Geography) ·
+long distance at near-zero fare, indicating a sensor defect (Logic).
+
+---
+
+## Approach
+
+### Data Preparation
+
+→ [`02_preparation`](notebooks/02_preparation.ipynb)
+
+- **Cleaning** (`data/cleaning.py`) — masks split into technical measurement errors (impossible values) vs.
+  business-scope exclusions (plausible but outside the analysis focus, e.g. fares > $250)
+- **Feature engineering** (`features/engineering.py`) — geo-route classification (`departure`/`arrival`/`route`),
+  economic metrics (`total_yield`, `price_per_mile`), time segments (`time_slot`, `is_weekend`), log-transforms
+  for skewed numeric columns
+
+### Analysis
+
+→ [`03_analysis`](notebooks/03_analysis.ipynb)
+
+Route-level aggregation (trip count, distance, fare — each as % of total) classifies every trip into one of
+9 route types (JFK-JFK, JFK-NYC, JFK-OTHER, NYC-JFK, NYC-NYC, NYC-OTHER, OTHER-NYC, OTHER-OTHER). This
+directly answers the departure-share question and exposes how disproportionately valuable JFK routes are
+per trip.
+
+### Insights
+
+→ [`04_insights`](notebooks/04_insights.ipynb) — not yet written up, see [BACKLOG](BACKLOG.md)
+
+---
+
+## Results
+
+### Route breakdown (293,369 cleaned trips)
+
+| Route | Trips | % of trips | % of fare revenue |
+| :--- | ---: | ---: | ---: |
+| NYC → NYC | 285,174 | 97.21% | 88.90% |
+| JFK → NYC | 5,445 | 1.86% | 7.01% |
+| NYC → JFK | 1,964 | 0.67% | 2.79% |
+| NYC → Other | 551 | 0.19% | 1.06% |
+| JFK → Other | 61 | 0.02% | 0.11% |
+| JFK → JFK | 143 | 0.05% | 0.08% |
+| Other → Other | 30 | 0.01% | 0.03% |
+| Other → NYC | 1 | 0.00% | 0.00% |
+
+**JFK departure share: 1.93%** (5,649 of 293,369 trips). All trips touching JFK — pickup or dropoff,
+i.e. JFK-JFK + JFK-NYC + JFK-Other + NYC-JFK — total **7,613 trips (2.6%)** but **9.99% of fare
+revenue**: a JFK trip earns roughly 4× the revenue of an average trip.
+
+### Recommendations
+
+Not yet finalized — requires the weekday/hourly breakdown (open items 4–7, see
+[Problem Statement](#problem-statement)) to translate the departure share into a concrete fleet-sizing
+number. Tracked in [BACKLOG.md](BACKLOG.md).
 
 ---
 
 ## Notebooks
 
-In Lesereihenfolge:
-
-| Notebook | Zweck |
+| Notebook | What you'll find |
 | :--- | :--- |
-| [`00_introduction`](notebooks/00_introduction.ipynb) | Projekt-Facts, Kontext, Workflow, Conventions |
-| [`01_exploration`](notebooks/01_exploration.ipynb) | EDA + Discovery |
-| [`02_preparation`](notebooks/02_preparation.ipynb) | Preparation + Preprocessing, Export |
-| [`03_analysis`](notebooks/03_analysis.ipynb) | Import, Analysis + Analytics |
-| [`04_insights`](notebooks/04_insights.ipynb) | Business Communication + Insights |
+| [00_introduction](notebooks/00_introduction.ipynb) | Scenario, project facts, data dictionary, geo bounds |
+| [01_exploration](notebooks/01_exploration.ipynb) | EDA: distributions, data quality, correlations, outliers |
+| [02_preparation](notebooks/02_preparation.ipynb) | Cleaning strategy, feature engineering, export |
+| [03_analysis](notebooks/03_analysis.ipynb) | Route classification, JFK departure share |
+| [04_insights](notebooks/04_insights.ipynb) | Executive summary + recommendation — open |
 
 ---
 
-## Report
+## Tech Stack
 
-Öffentlicher Einstieg / Präsentation: [`public/index.html`](public/index.html) — Landing-Page mit Navigation zu den Report-Views.
-
-> Start als Platzhalter, wird über `/project-case` mit Inhalt gefüllt (Story, Slides, Views).
-
----
-
-## Konfiguration
-
-### Pfade (`src/nyc_taxi_routes/config.py`)
-
-```python
-from nyc_taxi_routes.config import PATHS
-
-PATHS["raw"]       # data/raw/
-PATHS["processed"] # data/processed/
-PATHS["figures"]   # public/img/
-```
-
-### Notebook-Einstieg
-
-```python
-from nyc_taxi_routes.notebook import *
-setup_plotting()
-```
+| Category | Tools |
+| :--- | :--- |
+| Language | Python 3.10 |
+| Data | Pandas, NumPy, PyArrow |
+| Visualisation | Matplotlib · Seaborn · Plotly · Folium |
+| ML utilities | Scikit-learn (available, not yet used — no modeling in scope) |
+| Packaging | uv · pyproject.toml |
+| Toolkit | [wgnd-toolkit](https://github.com/kaywiegand/wgnd-toolkit) — shared analytics helpers |
+| Notebooks | JupyterLab |
 
 ---
 
-## Tests ausfuehren
+## Reports & Artifacts
+
+| Artifact | Link |
+| :--- | :--- |
+| Hub (landing page) | [`public/index.html`](public/index.html) — placeholder, filled once `/project-case` runs |
+
+---
+
+## Setup
 
 ```bash
-pytest
-pytest --cov=src/nyc_taxi_routes --cov-report=term-missing
+git clone <repo-url>
+cd nyc-taxi-routes
+uv venv && source .venv/bin/activate
+uv pip install -e ".[da]"
+jupyter lab
 ```
+
+> Raw data (`2016_Yellow_Taxi_prepared.csv`) is not included — place it under `data/raw/` before running
+> `02_preparation.ipynb`.
 
 ---
 
-_Generiert mit dem wgnd-scaffolding Generator._
+## Author
+
+**Kay Alexander Wiegand**
+Senior Consultant · Data Scientist · Berlin
+[LinkedIn](https://de.linkedin.com/in/kaywiegand) · [GitHub](https://github.com/kaywiegand)
+
+*Originally a [StackFuel](https://stackfuel.com) exercise · built with
+[`wgnd-toolkit`](https://github.com/kaywiegand/wgnd-toolkit) and
+[`wgnd-scaffolding`](https://github.com/kaywiegand/wgnd-scaffolding).*

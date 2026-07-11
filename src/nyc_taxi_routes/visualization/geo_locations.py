@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from ny_taxi_routes.utils import JFK, NYC
+from nyc_taxi_routes.utils import JFK, NYC
 from wgnd.core.theme import mpl_style
 from wgnd.core.config import cfg
 
@@ -38,7 +38,7 @@ def show_geo_locations_map(df, colors=None):
     y_lims = (all_lat_min - 0.05, all_lat_max + 0.05)
 
     fig, axs = plt.subplots(1,2,figsize=(10,10), constrained_layout=True)
-    axs = axs.flatten()            
+    axs = axs.flatten()
 
     departures_nyc = df[ (df["departure"]=="NYC" ) ]
     departures_jfk = df[ (df["departure"]=="JFK" ) ]

@@ -10,8 +10,9 @@
 | Feld | Inhalt |
 | :--- | :--- |
 | Slug | `nyc-taxi-routes` |
-| Typ | DA |
-| Stack | Polars · Plotly · Jupyter |
+| Paket | `nyc_taxi_routes` (Import mit Underscores) |
+| Typ | DA — Data Analysis |
+| Stack | Pandas · Scikit-learn · Matplotlib/Seaborn · Plotly · Folium · Jupyter · wgnd-toolkit |
 
 ## Kontext-Einstieg
 
@@ -21,5 +22,7 @@
 
 ## Projektspezifische Hinweise
 
-_Hier projektspezifische Overrides ergänzen, z.B. besondere Datenquellen,
-Naming-Konventionen oder Abhängigkeiten zu anderen Repos._
+- Herkunft: StackFuel Übungsprojekt (Modul 2 / Kapitel 7) — Original-Aufgabenstellung in [`docs/infos.md`](docs/infos.md)
+- Geo-Klassifikation (JFK/NYC/Other) über `nyc_taxi_routes.utils.JFK`/`.NYC` (Bounding Boxes) — zentral, nicht in Notebooks dupliziert
+- `nyc_taxi_routes.notebook` bündelt alle projektspezifischen Imports (Cleaning, Feature Engineering, Geo-Viz) für den `from nyc_taxi_routes.notebook import *`-Einstieg in Notebooks
+- Package hieß bis 2026-07-11 `ny_taxi_routes` (ohne "c") — bei älteren externen Referenzen beachten
