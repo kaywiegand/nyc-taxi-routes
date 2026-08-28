@@ -1,7 +1,7 @@
 {
   "meta": {
     "project": "NYC Taxi Routes",
-    "period": "2016",
+    "period": "300.000 Taxifahrten, NYC 2016",
     "author": "Kay Wiegand",
     "github": "kaywiegand/nyc-taxi-routes",
     "presentation_title": "Ergebnis & Empfehlungen",
@@ -24,8 +24,8 @@
           "layout": "L6",
           "title": "NYC Taxi Routes",
           "subtitle": [
-            "Wie viele Taxis gehören an den Flughafen JFK?",
-            "Data-Analysis-Projekt | 2016"
+            "Nachfrage- und Routenanalyse für die JFK-Flottenplanung",
+            "Data-Analysis-Projekt mit Routen-Klassifikation | 300.000 Taxifahrten, NYC 2016"
           ],
           "content": [
             {
@@ -334,7 +334,7 @@
           "role": "closing",
           "layout": "split",
           "title": "NYC Taxi Routes",
-          "subtitle": "Wie viele Taxis gehören an den Flughafen JFK?<br>Data-Analysis-Projekt | 2016",
+          "subtitle": "Nachfrage- und Routenanalyse für die JFK-Flottenplanung<br>Data-Analysis-Projekt mit Routen-Klassifikation | 300.000 Taxifahrten, NYC 2016",
           "closing_primary_link": {
             "label": "Notebooks durchsuchen",
             "href": "../notebooks/",

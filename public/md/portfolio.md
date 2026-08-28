@@ -15,7 +15,7 @@ type:       DA
 stage:      Phase 5 — Analysis + Insights complete, all 9 business questions answered
 target:     JFK departure share (share of trips departing from JFK airport)
 stack:      Python · Pandas · Scikit-learn · Matplotlib/Seaborn · Plotly · Folium · wgnd-toolkit · Jupyter
-period:     2016
+period:     300.000 Taxifahrten, NYC 2016
 rows:       293,369 (cleaned, from 300,000 raw)
 notebooks:  5
 findings:   6

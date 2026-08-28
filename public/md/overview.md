@@ -5,7 +5,7 @@
 **Autor:** Kay Wiegand
 **Zielgruppe:** Business · Stakeholder · Flottenplanung
 **Dauer:** 5 Minuten
-**Zeitraum:** 2016
+**Zeitraum:** 300.000 Taxifahrten, NYC 2016
 **GitHub:** [kaywiegand/nyc-taxi-routes](https://github.com/kaywiegand/nyc-taxi-routes)
 
 ---
@@ -17,8 +17,8 @@
 
 # NYC Taxi Routes
 
-**Wie viele Taxis gehören an den Flughafen JFK?**
-**Data-Analysis-Projekt | 2016**
+**Nachfrage- und Routenanalyse für die JFK-Flottenplanung**
+**Data-Analysis-Projekt mit Routen-Klassifikation | 300.000 Taxifahrten, NYC 2016**
 
 * **1,93 %** — der Fahrten starten am JFK
 * **~4×** — Umsatz je JFK-Fahrt gegenüber dem Durchschnitt
@@ -106,6 +106,6 @@
 ### Ende
 
 ## NYC Taxi Routes
-*Wie viele Taxis gehören an den Flughafen JFK?<br>Data-Analysis-Projekt | 2016*
+*Nachfrage- und Routenanalyse für die JFK-Flottenplanung<br>Data-Analysis-Projekt mit Routen-Klassifikation | 300.000 Taxifahrten, NYC 2016*
 
 > Eine Nische richtig einordnen
