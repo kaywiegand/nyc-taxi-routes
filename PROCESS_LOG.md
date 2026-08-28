@@ -13,8 +13,8 @@
 | Typ | DA — Data Analysis |
 | Herkunft | StackFuel Übungsprojekt (Modul 2 / Kapitel 7) — Original-Aufgabenstellung: [`docs/infos.md`](docs/infos.md) |
 | Erstellt | 2026-04-21 (ursprünglicher Scaffold) · Fundament-Nachzug 2026-07-11 |
-| Status | 🟢 Fundament + Analyse abgeschlossen, Portfolio-Aufbereitung läuft — Story-Phase fertig, Slides offen |
-| Nächster Schritt | `/project-case slides` — Dialog-Modus, dann `/project-case report` |
+| Status | 🟢 Portfolio-Case gebaut — slides.yaml + 3 Views + Hub live im Repo, Pages-Deploy wartet auf Merge nach `main` |
+| Nächster Schritt | Branch `claude/nyc-taxi-portfolio-setup-84c0b9` nach `main` mergen → `pages.yml` deployt → `https://kaywiegand.github.io/nyc-taxi-routes/` prüfen |
 
 ---
 
@@ -79,5 +79,24 @@
 
 **Nächster Schritt (nächste Session, von Kay explizit als eigener Task benannt):**
 `/project-case slides` — Dialog-Modus: StoryView Kapitel für Kapitel aufbauen (Bezug auf `portfolio.md`-Findings), dann Overview/TechView per Wiederverwendung ableiten, Tabellen-Review vor dem Schreiben. Danach `/project-case report` (mechanisch: `make portfolio` — archive → json → html → index → md → matrix).
+
+---
+
+### 2026-08-28 – Portfolio-Case: slides.yaml + Views + Pages-Workflow
+
+**Kontext:** `portfolio.md` stand (Story-Phase). Auftrag: `check` → `slides` → `report` → Pages-Workflow ergänzen → push.
+
+**Was gemacht wurde:**
+- **`/project-case check` → JA.** Fundament vollständig, Zahlen konsistent (300.000 − 6.631 = 293.369; JFK 5.649). Offene ⚠️ waren genau das, was `slides`/`report` produzieren.
+- **`/project-case slides`** — `public/md/slides.yaml` als Single Source of Truth geschrieben. 10 Kapitel, 24 Slide-Einträge, Slide-Tabelle vorab von Kay abgenommen. View-Rollen nach Kay-Vorgabe (27.08.): Overview = Ergebnis + Empfehlungen ohne Methodik (10 Slides), StoryView = vollständig (20), TechView = technisch ohne Business-Empfehlungen (11). Auf Kay-Wunsch: alle TechView-Content-Slides sind auch in StoryView (nur Title/Agenda bleiben view-eigen).
+- **Schema-Fallen aus dem Telefonica-Case vermieden:** `view_meta:`, `chart_refs.source` ohne `img/`-Präfix, `layout: image_left` auf dem Item, EINE Closing-Slide mit `role: closing` + `layout: split`, alle `statement` mit `layout: wide`/`lead_copy`, Text neben Charts in der `caption`. `validate_slides.py` grün.
+- **`/project-case report`** — archive (alter Stub → `public/archive/v1/`) → json → html → index → md → matrix. Alle Artefakte in `public/`.
+- **`.github/workflows/pages.yml`** von `fl-airport-company` kopiert (identisch mit telefonica). Fehlte hier — Ursache der 404 trotz aktiviertem Pages-Setting.
+- `uv.lock` ergänzt (Lockfile gehört laut `.gitignore` in Git).
+- Commit `1afe6dd` auf `claude/nyc-taxi-portfolio-setup-84c0b9`, gepusht.
+
+**Offen:** Pages-URL noch 404 — `pages.yml` triggert nur auf `push` zu `main`. Nach Merge des Branches läuft der Deploy, dann `https://kaywiegand.github.io/nyc-taxi-routes/` auf 200 prüfen (BACKLOG #10).
+
+**Nächster Schritt:** Branch nach `main` mergen, Pages-Deploy abwarten, URL verifizieren.
 
 ---
