@@ -1,35 +1,256 @@
 <!DOCTYPE html>
+<!--
+  ⚙️  GENERIERT von scripts/generate_index_from_portfolio.py aus public/md/portfolio.md.
+  NICHT public/index.html direkt editieren — wird beim nächsten Lauf überschrieben.
+  Layout + kuratierte Hub-Copy hier im Template ändern.
+  Dynamische Werte ({{...}}) kommen aus portfolio.md (Name, Zeitraum, URLs).
+
+  Farb-/Typo-Tokens kommen per <link> aus css/slides.css (selbe Datei wie die Slides,
+  wird von generate_html_from_json.py bereits nach public/css/ kopiert) — ein Theme-
+  Wechsel (--card/--card-border in slides.css) zieht damit Hub und Slides gleichzeitig.
+-->
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NYC Taxi Routes – Executive Summary</title>
-    <style>
-        body { font-family: -apple-system, sans-serif; max-width: 900px;
-               margin: 40px auto; padding: 0 20px; color: #333; }
-        h1   { color: #2E86AB; border-bottom: 2px solid #2E86AB; padding-bottom: 8px; }
-        h2   { color: #555; margin-top: 32px; }
-        .placeholder { background: #f5f5f5; border-left: 4px solid #2E86AB;
-                        padding: 12px 16px; margin: 16px 0; border-radius: 0 4px 4px 0; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYC Taxi Routes — Portfolio</title>
+  <link rel="stylesheet" href="css/slides.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-ui);
+      color: var(--ink); line-height: 1.6; background: #FAFAFA;
+    }
+
+    /* ─── Header ─────────────────────────────── */
+    header {
+      background: var(--ink);
+      color: white; padding: 4rem 2rem 3.5rem;
+    }
+    .header-inner { max-width: 900px; margin: 0 auto; }
+    header h1 { font-size: 3.5rem; font-weight: 100; margin-bottom: 1.35rem; }
+    header .tagline  { font-size: 1rem; opacity: 0.85; margin-bottom: 0.15rem; }
+    header .subtitle { font-size: 1rem; opacity: 0.85; margin-bottom: 0; }
+
+    /* KPI-Reihe wie E1 im Slide-System: Border-Left-Akzent, kein Kasten */
+    .kpi-row { display: flex; gap: 28px; flex-wrap: wrap; margin-top: 5rem; }
+    .kpi { border-left: 3px solid rgba(255,255,255,0.25); padding-left: 14px; text-align: left; }
+    .kpi .v { font-size: 1.6rem; font-weight: 500; color: #fff; line-height: 1; }
+    .kpi .l { font-size: 0.68rem; color: rgba(255,255,255,0.6); letter-spacing: 0.04em; margin-top: 6px; }
+    .kpi.positive { border-left-color: var(--color-kpi-positive); }
+    .kpi.positive .v { color: var(--color-kpi-positive); }
+    .kpi.negative { border-left-color: var(--color-kpi-negative); }
+    .kpi.negative .v { color: var(--color-kpi-negative); }
+    .kpi.warning { border-left-color: var(--color-kpi-warning); }
+    .kpi.warning .v { color: var(--color-kpi-warning); }
+
+    /* ─── Main rhythm ────────────────────────────
+       First block ↔ header  ==  block ↔ block  ==  last block ↔ footer  ==  4rem */
+    main { max-width: 900px; margin: 0 auto; padding: 6rem 0 0; }
+    section { margin-bottom: 6rem; }
+
+    .section-label {
+      font-size: 0.72rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.6em;
+    }
+    h2 { font-size: 1.35rem; font-weight: 500; color: var(--navy); margin-bottom: 0.5rem; }
+    .section-intro { font-size: 0.92rem; color: var(--ink-body); margin-bottom: 0.5rem; line-height: 1.6; }
+
+    /* "Das Projekt" — zwei Spalten-Blöcke (Aufteilung kommt aus Python, linke Spalte
+       immer >= rechte), jede Spalte stapelt ihre Items nach eigener Höhe statt
+       CSS-Grid/Column-Balancing zu überlassen. */
+    .about-grid {
+      display: flex; gap: 3rem;
+      margin-top: 1.2rem;
+    }
+    .about-col { flex: 1; min-width: 0; }
+    @media (max-width: 760px) {
+      .about-grid { flex-direction: column; gap: 0; }
+    }
+    .about-item {
+      font-size: 0.92rem; color: var(--ink-body); line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .about-item:last-child { margin-bottom: 0; }
+    /* Nur die Zwischenüberschrift (erstes Kind) wird block — inline <strong> im
+       Fließtext (z.B. "Ja" als Betonung) bleibt normaler Fließtext. */
+    .about-item > strong:first-child { display: block; color: var(--navy); font-weight: 500; margin-bottom: 0.2em; }
+
+    /* ─── View Cards Grid (3 columns) — wie E2/E3 Karten: gefüllte Fläche, kein Rahmen ── */
+    .view-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 22px;
+      margin-top: 1.4rem;
+    }
+    @media (max-width: 760px) {
+      .view-grid { grid-template-columns: 1fr; }
+    }
+
+    .view-card {
+      background: var(--card);
+      padding: 22px 24px;
+      border-radius: var(--radius-card);
+      text-decoration: none; color: inherit;
+      transition: background 0.15s, transform 0.15s;
+      display: flex; flex-direction: column;
+    }
+    .view-card:hover { background: var(--card-border); transform: translateY(-2px); }
+
+    .view-label {
+      font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+      margin-bottom: 1em; color: var(--accent);
+    }
+
+    .view-card h3 { font-size: 1.15rem; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+    .view-card .view-desc { font-size: 0.85rem; color: var(--ink-body); margin-bottom: 14px; line-height: 1.5; flex-grow: 1; }
+    .view-meta { display: flex; gap: 12px; align-items: center; margin-top: 12px; flex-wrap: wrap; }
+    .view-count { font-size: 0.75rem; color: var(--ink-soft); font-weight: 500; }
+    .view-badge {
+      font-size: 0.7rem; font-weight: 600; padding: 3px 9px; border-radius: var(--radius-box);
+      background: #fff; color: var(--navy);
+    }
+
+    /* ─── Quick Links ─────────────────────────── */
+    .links-section {
+      padding: 0; margin-top: 1.2rem;
+    }
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .quick-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px; border-radius: var(--radius-card);
+      text-decoration: none; color: var(--accent);
+      background: var(--bg-box-default);
+      transition: background 0.15s, color 0.15s;
+      font-size: 0.9rem; font-weight: 500;
+    }
+    .quick-link:hover { background: var(--card-border); color: var(--navy); }
+    .quick-link::before { content: "→"; font-weight: 700; }
+
+    /* ─── Footer ─────────────────────────── */
+    footer {
+      background: var(--bg-box-default); border-top: 1px solid var(--card-border);
+      padding: 2rem; text-align: center; color: var(--ink-soft); font-size: 0.85rem;
+      margin-top: 4rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
 </head>
 <body>
+
+<header>
+  <div class="header-inner">
     <h1>NYC Taxi Routes</h1>
-    <p><em>Executive Summary Report – generiert aus public/</em></p>
+    <p class="tagline">Wie viele Taxis gehören an den Flughafen JFK?</p>
+    <p class="subtitle">Data-Analysis-Projekt | 2016</p>
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="v">1,93 %</div>
+        <div class="l">der Fahrten starten am JFK</div>
+      </div>
+      <div class="kpi positive">
+        <div class="v">~4×</div>
+        <div class="l">Umsatz je JFK-Fahrt gegenüber dem Durchschnitt</div>
+      </div>
+      <div class="kpi">
+        <div class="v">293.369</div>
+        <div class="l">bereinigte Taxifahrten, NYC 2016</div>
+      </div>
+    </div>
+  </div>
+</header>
 
-    <h2>🎯 Problem Statement</h2>
-    <div class="placeholder">Platzhalter – hier das Business-Problem beschreiben.</div>
+<main>
 
-    <h2>📊 Key Findings</h2>
-    <div class="placeholder">Platzhalter – die 3 wichtigsten Erkenntnisse.</div>
+  <!-- ─── Project Context ─────────────────────── -->
+  <section>
+    <div class="section-label">Motivation & Ansatz</div>
+    <h2>Das Projekt</h2>
+    <div class="about-grid">
+      <div class="about-col">
+        <div class="about-item"><strong>Motivation</strong>Ein NYC-Taxiunternehmer plant seine Flotte und will wissen, wie viele Fahrzeuge an den Flughafen JFK gehören. JFK liegt weit vom Zentrum — wer dort absetzt, wartet lange auf die nächste Fahrt, dafür fahren JFK-Gäste längere, lukrativere Strecken.</div>
+        <div class="about-item"><strong>Kernfrage</strong>Wie groß ist das JFK-Geschäft im Vergleich zum Gesamtvolumen, wie viel Umsatz hängt daran, und wie stark schwankt die Nachfrage über Wochentag und Uhrzeit? <strong>1,93 % der Fahrten</strong> starten am JFK, sie bringen aber rund <strong>10 % des Fahrpreis-Umsatzes</strong> — etwa das Vierfache je Fahrt.</div>
+      </div>
+      <div class="about-col">
+        <div class="about-item"><strong>Vorgehen</strong>Jede der 293.369 bereinigten Fahrten wird über zwei Bounding-Boxes klassifiziert (JFK / NYC / Other) und einem von neun Routentypen zugeordnet. Darauf setzen die Auswertungen zu Umsatzanteil, Wochentag- und Stundenverteilung auf.</div>
+        <div class="about-item"><strong>Ergebnis & Grenzen</strong>JFK ist eine kleine, aber überproportional wertvolle Nische mit klarem Wochen- und Tagesrhythmus — Montag 1,35× über, Samstag 0,75× unter dem Schnitt, JFK-Abendspitze 17:00 statt 18:00. Der Datensatz enthält keine Flottengröße, deshalb sind alle Empfehlungen relative Faktoren, keine Stückzahlen.</div>
+      </div>
+    </div>
+  </section>
 
-    <h2>📈 Ergebnisse</h2>
-    <div class="placeholder">Platzhalter – Metriken, Modell-Performance oder Analyse-Resultate.</div>
+  <!-- ─── Drei Portfolio-Views ─────────────────────── -->
+  <section>
+    <div class="section-label">Wähle deine Perspektive</div>
+    <h2>Detaillierte Projekt Präsentationen</h2>
+    <p class="section-intro">
+      Das Projekt in drei kuratierten Ansichten für verschiedene Zielgruppen und Zeitbudgets.<br>
+      Jede Präsentation nutzt die gleichen Daten — andere Dramaturgie und Fokus.
+    </p>
 
-    <h2>📋 Empfehlungen</h2>
-    <div class="placeholder">Platzhalter – konkrete nächste Schritte.</div>
+    <div class="view-grid">
+      <a href="overview.html" class="view-card overview">
+        <div class="view-label">Overview</div>
+        <h3>Basic Information</h3>
+        <p class="view-desc">Ergebnis und Handlungsempfehlungen für die Flottenplanung. Die kürzeste Fassung, ohne Methodik.</p>
+        <div class="view-meta">
+          <span class="view-count">10 Slides</span>
+          <span class="view-badge blue">Business</span>
+        </div>
+      </a>
+      <a href="techview.html" class="view-card techview">
+        <div class="view-label">Tech View</div>
+        <h3>Technical Insights</h3>
+        <p class="view-desc">Datenbereinigung, Geo-Klassifikation über Bounding-Boxes und methodische Entscheidungen. Ohne Business-Empfehlungen.</p>
+        <div class="view-meta">
+          <span class="view-count">11 Slides</span>
+          <span class="view-badge dark">Data Science</span>
+        </div>
+      </a>
+      <a href="storyview.html" class="view-card storyview">
+        <div class="view-label">Story View</div>
+        <h3>Detailed Description</h3>
+        <p class="view-desc">Der gesamte Weg von den Rohdaten über die Routen-Klassifikation bis zu den fünf Flotten-Empfehlungen. Portfolio-Vollansicht.</p>
+        <div class="view-meta">
+          <span class="view-count">20 Slides</span>
+          <span class="view-badge purple">Portfolio</span>
+        </div>
+      </a>
+    </div>
+  </section>
 
-    <h2>🖼️ Visualisierungen</h2>
-    <div class="placeholder">Platzhalter – Plots aus public/img/ hier einbinden.</div>
+  <!-- ─── Quick Links ─────────────────────── -->
+  <section>
+    <div class="section-label">Schneller Zugriff</div>
+    <h2>Weitere Ressourcen</h2>
+
+    <div class="links-section">
+      <div class="links-grid">
+        <a href="https://github.com/kaywiegand/nyc-taxi-routes" class="quick-link" target="_blank">GitHub-Repo</a>
+        <a href="../notebooks/" class="quick-link" target="_blank">Notebooks</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    NYC Taxi Routes — NYC · Yellow Taxi · Flottenplanung JFK<br>
+    Kay Wiegand |
+    <a href="https://www.linkedin.com/in/kaywiegand/" target="_blank">LinkedIn</a> |
+    <a href="https://github.com/kaywiegand" target="_blank">GitHub</a>
+  </p>
+  <p style="margin-top: 1rem; font-size: 0.75rem; opacity: 0.7;">
+    Portfolio-Pipeline mechanisiert (2026-06-19) ·
+    <a href="md/portfolio.md">Single Source of Truth</a>
+  </p>
+</footer>
+
 </body>
 </html>

@@ -1,0 +1,362 @@
+{
+  "meta": {
+    "project": "NYC Taxi Routes",
+    "period": "2016",
+    "author": "Kay Wiegand",
+    "github": "kaywiegand/nyc-taxi-routes",
+    "presentation_title": "Ergebnis & Empfehlungen",
+    "audience": "Business · Stakeholder · Flottenplanung",
+    "duration_minutes": 5,
+    "closing_links": [
+      {
+        "href": "../notebooks/",
+        "label": "Notebooks"
+      }
+    ]
+  },
+  "chapters": [
+    {
+      "nav_label": "Einstieg",
+      "nav_tick_label": "Einstieg",
+      "slides": [
+        {
+          "role": "title",
+          "layout": "L6",
+          "title": "NYC Taxi Routes",
+          "subtitle": [
+            "Wie viele Taxis gehören an den Flughafen JFK?",
+            "Data-Analysis-Projekt | 2016"
+          ],
+          "content": [
+            {
+              "type": "figures",
+              "items": [
+                {
+                  "value": "1,93 %",
+                  "label": "der Fahrten starten am JFK",
+                  "sentiment": "neutral"
+                },
+                {
+                  "value": "~4×",
+                  "label": "Umsatz je JFK-Fahrt gegenüber dem Durchschnitt",
+                  "sentiment": "positive"
+                },
+                {
+                  "value": "293.369",
+                  "label": "bereinigte Taxifahrten, NYC 2016",
+                  "sentiment": "neutral"
+                }
+              ]
+            },
+            {
+              "type": "view_teaser",
+              "label": "Basic Information",
+              "description": "Ergebnis und Handlungsempfehlungen für die Flottenplanung. Die kürzeste Fassung, ohne Methodik."
+            }
+          ]
+        },
+        {
+          "layout": "L6",
+          "kicker": "Agenda",
+          "title": "Inhaltsübersicht",
+          "subtitle": "Ergebnis und Empfehlungen, ohne Methodik",
+          "content": [
+            {
+              "type": "agenda",
+              "items": [
+                "Problem",
+                "Ergebnis",
+                "Empfehlungen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nav_label": "Problem",
+      "nav_tick_label": "Problem",
+      "slides": [
+        {
+          "layout": "L6",
+          "kicker": "Problem",
+          "title": "Wie viele Taxis gehören an den Flughafen JFK?",
+          "subtitle": "Ein NYC-Taxiunternehmer plant seine Flotte",
+          "content": [
+            {
+              "type": "statement",
+              "layout": "lead_copy",
+              "text": "JFK liegt weit vom Zentrum",
+              "copy": "Wer dort Fahrgäste absetzt, steht lange, bis die nächste Fahrt kommt. Dafür fahren JFK-Gäste längere, lukrativere Strecken. Die Frage ist, für wie viele Taxis sich das Warten lohnt."
+            },
+            {
+              "type": "figures",
+              "items": [
+                {
+                  "value": "300.000",
+                  "label": "Taxifahrten im Rohdatensatz, NYC 2016",
+                  "sentiment": "neutral"
+                },
+                {
+                  "value": "1,93 %",
+                  "label": "davon starten am JFK",
+                  "sentiment": "neutral"
+                },
+                {
+                  "value": "keine",
+                  "label": "Flottengröße im Datensatz — nur relative Faktoren möglich",
+                  "sentiment": "warning"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nav_label": "Routen",
+      "nav_tick_label": "Routen",
+      "slides": [
+        {
+          "layout": "L6",
+          "kicker": "Routen",
+          "title": "Fast alles bleibt innerhalb der Stadt",
+          "subtitle": "Finding F5 — NYC→NYC dominiert Volumen und Distanz",
+          "content": [
+            {
+              "type": "figures",
+              "items": [
+                {
+                  "value": "97,21 %",
+                  "label": "der Fahrten sind NYC→NYC",
+                  "sentiment": "neutral"
+                },
+                {
+                  "value": "83,77 %",
+                  "label": "der gefahrenen Distanz sind NYC→NYC",
+                  "sentiment": "neutral"
+                },
+                {
+                  "value": "1,93 %",
+                  "label": "der Fahrten starten am JFK",
+                  "sentiment": "positive"
+                }
+              ]
+            },
+            {
+              "type": "statement",
+              "layout": "wide",
+              "text": "JFK ist keine Volumen-Säule, sondern eine kleine, klar abgegrenzte Nische. Genau deshalb lohnt der zweite Blick auf ihren Wert."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nav_label": "JFK im Detail",
+      "nav_tick_label": "JFK im Detail",
+      "slides": [
+        {
+          "layout": "L6",
+          "kicker": "JFK im Detail",
+          "title": "2,6 % der Fahrten, 10 % des Umsatzes",
+          "subtitle": "Finding F2 — das JFK-Umsatz-Premium",
+          "content": [
+            {
+              "type": "figures",
+              "items": [
+                {
+                  "value": "7.613",
+                  "label": "Fahrten berühren den JFK (2,6 %)",
+                  "sentiment": "neutral"
+                },
+                {
+                  "value": "9,99 %",
+                  "label": "des Fahrpreis-Umsatzes entfallen darauf",
+                  "sentiment": "positive"
+                },
+                {
+                  "value": "~4×",
+                  "label": "Umsatz je JFK-Fahrt gegenüber dem Durchschnitt",
+                  "sentiment": "positive"
+                }
+              ]
+            },
+            {
+              "type": "statement",
+              "layout": "wide",
+              "text": "Eine JFK-Fahrt ist rund viermal so viel wert wie eine durchschnittliche Fahrt. Die Nische ist klein im Volumen, aber überproportional im Ertrag."
+            }
+          ]
+        },
+        {
+          "kicker": "JFK im Detail",
+          "title": "Montag trägt, Samstag fällt ab",
+          "subtitle": "Finding F3 — die JFK-Nachfrage ist über die Woche nicht gleichverteilt",
+          "content": [
+            {
+              "type": "chart_refs",
+              "layout": "image_left",
+              "items": [
+                {
+                  "source": "jfk_share_by_weekday.png",
+                  "label": "JFK-Abfahrtanteil je Wochentag",
+                  "caption": "Montag hat mit 2,60 % den höchsten JFK-Anteil, Samstag mit 1,44 % den niedrigsten.<br><br>Bezogen auf alle JFK-Fahrten ist Montag 1,35× überrepräsentiert (20,61 % gegen 15,24 % aller Fahrten), Samstag 0,75× unterrepräsentiert (11,38 % gegen 15,23 %)."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "kicker": "JFK im Detail",
+          "title": "Die JFK-Spitze kommt eine Stunde früher",
+          "subtitle": "Finding F4 — der Tagesverlauf weicht vom Gesamtnetz ab",
+          "content": [
+            {
+              "type": "chart_refs",
+              "layout": "image_left",
+              "items": [
+                {
+                  "source": "hourly_distribution_overall_vs_jfk.png",
+                  "label": "Stundenverteilung, gesamt gegen JFK",
+                  "caption": "Die netzweite Spitze liegt um 18:00, die JFK-eigene Spitze schon um 17:00.<br><br>Früh zwischen 5 und 6 Uhr liegt der JFK-Anteil rund doppelt so hoch wie der allgemeine Verkehrsanteil zu dieser Stunde — vermutlich frühe Abflüge."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nav_label": "Ergebnis",
+      "nav_tick_label": "Ergebnis",
+      "slides": [
+        {
+          "layout": "L6",
+          "kicker": "Ergebnis",
+          "title": "Kleine Nische, hoher Wert, klare Rhythmen",
+          "subtitle": "Die Kernthese in einem Satz",
+          "content": [
+            {
+              "type": "statement",
+              "layout": "lead_copy",
+              "text": "JFK-Fahrten sind 1,93 % des Volumens, aber rund das Vierfache wert — mit starker Wochen- und Tagesschwankung.",
+              "copy": "Eine feste Flottenquote würde Montage und frühe Morgenstunden systematisch unterversorgen und Samstage überversorgen. Die Bereitstellung sollte dem Wochentag- und Uhrzeit-Muster folgen, nicht einem pauschalen Anteil."
+            },
+            {
+              "type": "figures",
+              "items": [
+                {
+                  "value": "1,93 %",
+                  "label": "Anteil am Fahrtvolumen",
+                  "sentiment": "neutral"
+                },
+                {
+                  "value": "~4×",
+                  "label": "Umsatz je Fahrt",
+                  "sentiment": "positive"
+                },
+                {
+                  "value": "1,35× / 0,75×",
+                  "label": "Montag über, Samstag unter dem Wochenschnitt",
+                  "sentiment": "warning"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nav_label": "Empfehlungen",
+      "nav_tick_label": "Empfehlungen",
+      "slides": [
+        {
+          "layout": "wide",
+          "kicker": "Empfehlungen",
+          "title": "Fünf Maßnahmen für die Flottenplanung",
+          "subtitle": "Direkt aus den vier JFK-Findings abgeleitet",
+          "content": [
+            {
+              "type": "recommendations",
+              "items": [
+                {
+                  "category": "1",
+                  "title": "Montags-Aufschlag",
+                  "points": [
+                    "Rund 35 % mehr JFK-Taxis als im Wochenschnitt.",
+                    "Montag stellt 20,61 % aller JFK-Fahrten, aber nur 15,24 % aller Fahrten (1,35×)."
+                  ]
+                },
+                {
+                  "category": "2",
+                  "title": "Samstags-Reduktion",
+                  "points": [
+                    "Rund 25 % weniger JFK-Präsenz als im Wochenschnitt.",
+                    "Samstag stellt nur 11,38 % der JFK-Fahrten gegen 15,23 % aller Fahrten (0,75×)."
+                  ]
+                },
+                {
+                  "category": "3",
+                  "title": "Frühschicht verdoppeln",
+                  "points": [
+                    "Zwischen 5 und 7 Uhr die JFK-Abdeckung gegenüber der allgemeinen Nachfrage verdoppeln.",
+                    "Der JFK-Anteil liegt in diesen Stunden rund 2× der allgemeinen Verkehrsquote — frühe Abflüge."
+                  ]
+                },
+                {
+                  "category": "4",
+                  "title": "Abendspitze vorziehen",
+                  "points": [
+                    "Die JFK-Abendschicht auf 17:00 planen statt auf 18:00 wie im Gesamtnetz.",
+                    "Die JFK-eigene Spitze liegt eine Stunde vor der netzweiten Spitze."
+                  ]
+                },
+                {
+                  "category": "5",
+                  "title": "Rückfahrten priorisieren",
+                  "points": [
+                    "NYC→JFK-Rückfahrten dem Leerstand-Repositionieren vorziehen.",
+                    "JFK-berührende Fahrten bringen rund 4× den Umsatz einer Durchschnittsfahrt."
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nav_label": "Ende",
+      "nav_tick_label": "Ende",
+      "slides": [
+        {
+          "role": "closing",
+          "layout": "split",
+          "title": "NYC Taxi Routes",
+          "subtitle": "Wie viele Taxis gehören an den Flughafen JFK?<br>Data-Analysis-Projekt | 2016",
+          "closing_primary_link": {
+            "label": "Notebooks durchsuchen",
+            "href": "../notebooks/",
+            "target": "_blank"
+          },
+          "closing_extra_links": [
+            {
+              "label": "LinkedIn-Profil",
+              "href": "https://www.linkedin.com/in/kaywiegand/",
+              "target": "_blank"
+            }
+          ],
+          "content": [
+            {
+              "type": "statement",
+              "layout": "lead_copy",
+              "text": "Eine Nische richtig einordnen",
+              "copy": "1,93 % der Fahrten, rund das Vierfache an Wert, mit klarem Wochen- und Tagesrhythmus. Der Beitrag war nicht ein Modell, sondern die saubere Klassifikation und die Übersetzung der Muster in eine gewichtete Bereitstellung."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

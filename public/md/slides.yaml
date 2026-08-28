@@ -1,0 +1,568 @@
+# Slide-Registry — Single Source of Truth für Overview/StoryView/TechView
+#
+# Schema wie telefonica-churn / zh-tram-flow: chapters -> slides -> content-items.
+# View-Rollen (Kay 27.08.2026): Overview = kürzeste Business-Sicht (Ergebnis + Empfehlungen,
+# keine Methodik), StoryView = vollständigste Erzählung (alles ausser den view-eigenen Title-/
+# Agenda-Varianten), TechView = rein technische Themen (Bereinigung, Geo-Klassifikation,
+# Methodik, Grenzen) ohne Business-Empfehlungen.
+#
+# Content-Typen ohne Renderer (nicht verwenden): findings, note.
+
+chapters:
+
+  # ---------------------------------------------------------------------
+  - id: einstieg
+    nav_label: Einstieg
+    slides:
+      - id: einstieg-title-overview
+        views: [overview]
+        role: title
+        layout: L6
+        title: "NYC Taxi Routes"
+        subtitle:
+          - "Wie viele Taxis gehören an den Flughafen JFK?"
+          - "Data-Analysis-Projekt | 2016"
+        content:
+          - type: figures
+            items:
+              - {value: "1,93 %", label: "der Fahrten starten am JFK", sentiment: neutral}
+              - {value: "~4×", label: "Umsatz je JFK-Fahrt gegenüber dem Durchschnitt", sentiment: positive}
+              - {value: "293.369", label: "bereinigte Taxifahrten, NYC 2016", sentiment: neutral}
+
+      - id: einstieg-title-storyview
+        views: [storyview]
+        role: title
+        layout: L6
+        title: "NYC Taxi Routes"
+        subtitle:
+          - "Wie viele Taxis gehören an den Flughafen JFK?"
+          - "Data-Analysis-Projekt | 2016"
+        content:
+          - type: figures
+            items:
+              - {value: "293.369", label: "bereinigte Fahrten aus 300.000 Rohzeilen", sentiment: neutral}
+              - {value: "1,93 %", label: "JFK-Abfahrtanteil", sentiment: neutral}
+              - {value: "9,99 %", label: "des Fahrpreis-Umsatzes aus JFK-Fahrten", sentiment: positive}
+              - {value: "5", label: "nummerierte Notebooks, durchgehend reproduzierbar", sentiment: neutral}
+
+      - id: einstieg-title-techview
+        views: [techview]
+        role: title
+        layout: L6
+        title: "NYC Taxi Routes"
+        subtitle:
+          - "Wie viele Taxis gehören an den Flughafen JFK?"
+          - "Data-Analysis-Projekt | 2016"
+        content:
+          - type: figures
+            items:
+              - {value: "6.631", label: "Zeilen über Fehler- und Scope-Masken entfernt", sentiment: negative}
+              - {value: "2", label: "Bounding-Boxes klassifizieren jede Fahrt", sentiment: neutral}
+              - {value: "9", label: "mögliche Routentypen", sentiment: neutral}
+              - {value: "0", label: "Fehler-Outputs in 5 Notebooks", sentiment: positive}
+
+      - id: einstieg-agenda-overview
+        views: [overview]
+        layout: L6
+        kicker: "Agenda"
+        title: "Inhaltsübersicht"
+        subtitle: "Ergebnis und Empfehlungen, ohne Methodik"
+        content:
+          - type: agenda
+            items:
+              - "Problem"
+              - "Ergebnis"
+              - "Empfehlungen"
+
+      - id: einstieg-agenda-storyview
+        views: [storyview]
+        layout: L6
+        kicker: "Agenda"
+        title: "Inhaltsübersicht"
+        subtitle: "Der komplette Weg von den Rohdaten zu den Flotten-Empfehlungen"
+        content:
+          - type: agenda
+            items:
+              - "Problem"
+              - "Daten und Bereinigung"
+              - "Routen-Klassifikation"
+              - "Methodische Entscheidungen"
+              - "JFK im Detail"
+              - "Ergebnis"
+              - "Empfehlungen"
+              - "Grenzen"
+
+      - id: einstieg-agenda-techview
+        views: [techview]
+        layout: L6
+        kicker: "Agenda"
+        title: "Inhaltsübersicht"
+        subtitle: "Datenaufbereitung, Geo-Klassifikation und Methodik"
+        content:
+          - type: agenda
+            items:
+              - "Daten und Bereinigung"
+              - "Routen-Klassifikation"
+              - "Geo-Bounds und Methodik"
+              - "Grenzen"
+
+  # ---------------------------------------------------------------------
+  - id: problem
+    nav_label: Problem
+    slides:
+      - id: problem-szenario
+        views: [overview, storyview]
+        layout: L6
+        kicker: "Problem"
+        title: "Wie viele Taxis gehören an den Flughafen JFK?"
+        subtitle: "Ein NYC-Taxiunternehmer plant seine Flotte"
+        content:
+          - type: statement
+            layout: lead_copy
+            text: "JFK liegt weit vom Zentrum"
+            copy: "Wer dort Fahrgäste absetzt, steht lange, bis die nächste Fahrt kommt. Dafür fahren JFK-Gäste längere, lukrativere Strecken. Die Frage ist, für wie viele Taxis sich das Warten lohnt."
+          - type: figures
+            items:
+              - {value: "300.000", label: "Taxifahrten im Rohdatensatz, NYC 2016", sentiment: neutral}
+              - {value: "1,93 %", label: "davon starten am JFK", sentiment: neutral}
+              - {value: "keine", label: "Flottengröße im Datensatz — nur relative Faktoren möglich", sentiment: warning}
+
+      - id: problem-leitfrage
+        views: [storyview]
+        layout: L6
+        kicker: "Problem"
+        title: "Keine Zielquote, sondern eine Verteilung"
+        subtitle: "Was der Auftrag genau verlangt"
+        content:
+          - type: statement
+            layout: wide
+            text: "Der Auftrag nennt keine Sollgröße. Gesucht ist, wie stark die JFK-Nachfrage über Wochentag und Uhrzeit schwankt — daraus wird eine gewichtete Bereitstellung statt einer festen Zahl."
+          - type: sections
+            layout: columns
+            numbered: true
+            items:
+              - label: "Anteil bestimmen"
+                points:
+                  - "Wie groß ist das JFK-Geschäft im Vergleich zum Gesamtvolumen."
+                  - "Wie viel Umsatz hängt daran."
+              - label: "Schwankung bestimmen"
+                points:
+                  - "Wie sich der JFK-Anteil über die Woche verteilt."
+                  - "Wie sich der JFK-Anteil über den Tag verteilt."
+
+  # ---------------------------------------------------------------------
+  - id: daten
+    nav_label: Daten
+    slides:
+      - id: daten-quelle
+        views: [storyview, techview]
+        layout: wide
+        kicker: "Daten"
+        title: "Ein Datensatz, 2016er Yellow-Taxi-Fahrten"
+        subtitle: "Aufbereiteter CSV-Auszug aus dem StackFuel-Übungsprojekt"
+        content:
+          - type: comparison_table
+            columns: ["Schritt", "Umfang", "Anmerkung"]
+            rows:
+              - cells: ["Rohdaten", "300.000 Zeilen × 12 Spalten", "eine Zeile je Fahrt, NYC 2016"]
+                highlight: false
+              - cells: ["Bereinigt", "293.369 Zeilen", "6.631 Zeilen über Fehler- und Scope-Masken entfernt"]
+                highlight: false
+              - cells: ["Klassifiziert", "293.369 × +3 Spalten", "Abfahrtsgebiet, Ankunftsgebiet und Routentyp je Fahrt"]
+                highlight: true
+          - type: statement
+            layout: wide
+            text: "Keine Fahrzeug-IDs, keine Flottengröße. Jede Empfehlung ist ein relativer Faktor auf den Wochenschnitt, keine Stückzahl."
+
+      - id: daten-cleaning
+        views: [storyview, techview]
+        layout: L6
+        kicker: "Daten"
+        title: "Messfehler von Geschäfts-Scope getrennt"
+        subtitle: "Zwei Arten von Masken, unterschiedlich begründet"
+        content:
+          - type: box_grid
+            items:
+              - text: "<strong>Messfehler — unmögliche Werte</strong><br>Koordinaten außerhalb NYC, negative oder Null-Fahrpreise, lange Distanz bei Near-Zero-Fahrpreis (Sensordefekt), unplausible Passagierzahl. Technisch falsch, deshalb raus."
+                highlight: true
+              - text: "<strong>Geschäfts-Scope — plausibel, aber außerhalb</strong><br>Fahrpreise über 250 $, Extremdistanzen. Echte Fahrten, aber nicht Teil des Alltagsgeschäfts, um das es hier geht."
+                highlight: false
+              - text: "<strong>24 exakte Duplikate</strong><br>Vollständig identische Zeilen, ersatzlos entfernt."
+                highlight: false
+          - type: statement
+            layout: wide
+            text: "6.631 Zeilen entfernt, 2,2 % der Rohdaten. Klein genug, um die Verteilungen nicht zu verzerren, groß genug, um die Extremwerte aus den Kennzahlen zu halten."
+
+      - id: daten-features
+        views: [storyview, techview]
+        layout: wide
+        kicker: "Daten"
+        title: "Abgeleitete Spalten für die Analyse"
+        subtitle: "features/engineering.py — Geo, Ökonomie, Zeit"
+        content:
+          - type: comparison_table
+            columns: ["Gruppe", "Spalten", "Zweck"]
+            rows:
+              - cells: ["Geo-Route", "departure · arrival · route", "Bounding-Box-Klassifikation je Fahrt"]
+                highlight: true
+              - cells: ["Ökonomie", "total_yield · price_per_mile", "Ertrag je Fahrt und je Meile"]
+                highlight: false
+              - cells: ["Zeit", "time_slot · is_weekend", "Tagesabschnitt und Wochenende"]
+                highlight: false
+              - cells: ["Verteilung", "log-Transformierte der schiefen Numerik", "robustere Vergleiche"]
+                highlight: false
+          - type: statement
+            layout: wide
+            text: "Die Klassifikations- und Ökonomie-Spalten tragen die gesamte spätere Analyse. Sie entstehen einmal in der Preparation und werden exportiert."
+
+  # ---------------------------------------------------------------------
+  - id: routen
+    nav_label: Routen
+    slides:
+      - id: routen-klassifikation
+        views: [storyview, techview]
+        kicker: "Routen"
+        title: "Neun Routentypen aus zwei Gebieten"
+        subtitle: "Jede Fahrt bekommt ein Abfahrts- und ein Ankunftsgebiet: JFK, NYC oder Other"
+        content:
+          - type: chart_refs
+            layout: image_left
+            items:
+              - source: "route_distribution_log.png"
+                label: "Fahrten je Routentyp, logarithmische Skala"
+                caption: "Jede Fahrt wird über zwei Bounding-Boxes klassifiziert: liegt der Punkt in der JFK-Box, in der NYC-Box oder außerhalb.<br><br>Die Fahrtenzahl ist logarithmisch aufgetragen, weil NYC→NYC alle anderen Routentypen um Größenordnungen übersteigt."
+
+      - id: routen-geografie
+        views: [storyview, techview]
+        kicker: "Routen"
+        title: "Wo die Fahrten beginnen"
+        subtitle: "Pickup- und Dropoff-Punkte, klassifiziert nach JFK / NYC / Other"
+        content:
+          - type: chart_refs
+            layout: image_left
+            items:
+              - source: "pickup_locations_map.png"
+                label: "Pickup- und Dropoff-Standorte in NYC"
+                caption: "Die Masse der Punkte liegt in Manhattan und den inneren Boroughs. Der JFK bildet einen kompakten, klar abgesetzten Cluster im Südosten.<br><br>Diese räumliche Trennung ist der Grund, warum ein einfaches Rechteck für die Klassifikation ausreicht."
+
+      - id: routen-dominanz
+        views: [overview, storyview]
+        layout: L6
+        kicker: "Routen"
+        title: "Fast alles bleibt innerhalb der Stadt"
+        subtitle: "Finding F5 — NYC→NYC dominiert Volumen und Distanz"
+        content:
+          - type: figures
+            items:
+              - {value: "97,21 %", label: "der Fahrten sind NYC→NYC", sentiment: neutral}
+              - {value: "83,77 %", label: "der gefahrenen Distanz sind NYC→NYC", sentiment: neutral}
+              - {value: "1,93 %", label: "der Fahrten starten am JFK", sentiment: positive}
+          - type: statement
+            layout: wide
+            text: "JFK ist keine Volumen-Säule, sondern eine kleine, klar abgegrenzte Nische. Genau deshalb lohnt der zweite Blick auf ihren Wert."
+
+  # ---------------------------------------------------------------------
+  - id: methodik
+    nav_label: Methodik
+    slides:
+      - id: methodik-geobounds
+        views: [storyview, techview]
+        layout: wide
+        kicker: "Methodik"
+        title: "Klassifikation über Bounding-Boxes"
+        subtitle: "nyc_taxi_routes.utils.JFK / .NYC — zentral definiert, nicht in Notebooks dupliziert"
+        content:
+          - type: comparison_table
+            columns: ["Gebiet", "Breitengrad", "Längengrad", "Zweck"]
+            rows:
+              - cells: ["JFK", "40,627 – 40,660", "−73,808 – −73,766", "Flughafen-Rechteck, rund 3,7 km Kantenlänge"]
+                highlight: true
+              - cells: ["NYC", "40,577 – 40,918", "−74,150 – −73,700", "Metropolregion"]
+                highlight: false
+              - cells: ["Other", "außerhalb beider Boxen", "—", "alles Übrige"]
+                highlight: false
+          - type: statement
+            layout: wide
+            text: "Ein Rechteck ist eine grobe Näherung an das Flughafengelände. Es fasst die Terminal-Vorfahrten sicher, greift am Rand aber auch angrenzende Straßen mit — bewusst in Kauf genommen für eine reproduzierbare, an einer Stelle nachlesbare Regel."
+
+      - id: methodik-ansatz
+        views: [storyview, techview]
+        layout: wide
+        kicker: "Methodik"
+        title: "Deskriptiv, relativ, reproduzierbar"
+        subtitle: "Drei bewusste Entscheidungen zum Vorgehen"
+        content:
+          - type: contrasts
+            items:
+              - topic: "Ergebnisform"
+                assumption: "Eine konkrete Taxi-Stückzahl für den JFK."
+                finding: "Gewichtungsfaktoren auf den Wochenschnitt — der Datensatz enthält keine Flottengröße."
+              - topic: "Methode"
+                assumption: "Ein Vorhersagemodell mit Train/Test-Split."
+                finding: "Eine Bestandsaufnahme von Anteilen und Zeitmustern in den 2016er Daten."
+              - topic: "Klassifikation"
+                assumption: "Ein exaktes Flughafen-Polygon."
+                finding: "Eine Bounding-Box — grob, aber zentral definiert und reproduzierbar."
+          - type: statement
+            layout: wide
+            text: "Die Frage ist eine Anteils- und Verteilungsfrage, keine Prognose. Jede Vereinfachung ist dokumentiert und im Code an einer Stelle nachlesbar."
+
+  # ---------------------------------------------------------------------
+  - id: analyse
+    nav_label: JFK im Detail
+    slides:
+      - id: analyse-umsatz
+        views: [overview, storyview]
+        layout: L6
+        kicker: "JFK im Detail"
+        title: "2,6 % der Fahrten, 10 % des Umsatzes"
+        subtitle: "Finding F2 — das JFK-Umsatz-Premium"
+        content:
+          - type: figures
+            items:
+              - {value: "7.613", label: "Fahrten berühren den JFK (2,6 %)", sentiment: neutral}
+              - {value: "9,99 %", label: "des Fahrpreis-Umsatzes entfallen darauf", sentiment: positive}
+              - {value: "~4×", label: "Umsatz je JFK-Fahrt gegenüber dem Durchschnitt", sentiment: positive}
+          - type: statement
+            layout: wide
+            text: "Eine JFK-Fahrt ist rund viermal so viel wert wie eine durchschnittliche Fahrt. Die Nische ist klein im Volumen, aber überproportional im Ertrag."
+
+      - id: analyse-wochentag
+        views: [overview, storyview]
+        kicker: "JFK im Detail"
+        title: "Montag trägt, Samstag fällt ab"
+        subtitle: "Finding F3 — die JFK-Nachfrage ist über die Woche nicht gleichverteilt"
+        content:
+          - type: chart_refs
+            layout: image_left
+            items:
+              - source: "jfk_share_by_weekday.png"
+                label: "JFK-Abfahrtanteil je Wochentag"
+                caption: "Montag hat mit 2,60 % den höchsten JFK-Anteil, Samstag mit 1,44 % den niedrigsten.<br><br>Bezogen auf alle JFK-Fahrten ist Montag 1,35× überrepräsentiert (20,61 % gegen 15,24 % aller Fahrten), Samstag 0,75× unterrepräsentiert (11,38 % gegen 15,23 %)."
+
+      - id: analyse-wochentag-verteilung
+        views: [storyview]
+        kicker: "JFK im Detail"
+        title: "Die Wochenkurve im Direktvergleich"
+        subtitle: "Gesamtverkehr gegen JFK-Fahrten"
+        content:
+          - type: chart_refs
+            layout: image_left
+            items:
+              - source: "weekday_distribution_overall_vs_jfk.png"
+                label: "Wochentagsverteilung, gesamt gegen JFK"
+                caption: "Der Gesamtverkehr verteilt sich fast gleichmäßig über die Woche. Die JFK-Kurve zieht zum Wochenanfang an und bricht am Wochenende ein.<br><br>Die Differenz der beiden Kurven ist die eigentliche Planungsgröße für die Bereitstellung."
+
+      - id: analyse-uhrzeit
+        views: [overview, storyview]
+        kicker: "JFK im Detail"
+        title: "Die JFK-Spitze kommt eine Stunde früher"
+        subtitle: "Finding F4 — der Tagesverlauf weicht vom Gesamtnetz ab"
+        content:
+          - type: chart_refs
+            layout: image_left
+            items:
+              - source: "hourly_distribution_overall_vs_jfk.png"
+                label: "Stundenverteilung, gesamt gegen JFK"
+                caption: "Die netzweite Spitze liegt um 18:00, die JFK-eigene Spitze schon um 17:00.<br><br>Früh zwischen 5 und 6 Uhr liegt der JFK-Anteil rund doppelt so hoch wie der allgemeine Verkehrsanteil zu dieser Stunde — vermutlich frühe Abflüge."
+
+  # ---------------------------------------------------------------------
+  - id: ergebnis
+    nav_label: Ergebnis
+    slides:
+      - id: ergebnis-synthese
+        views: [overview, storyview]
+        layout: L6
+        kicker: "Ergebnis"
+        title: "Kleine Nische, hoher Wert, klare Rhythmen"
+        subtitle: "Die Kernthese in einem Satz"
+        content:
+          - type: statement
+            layout: lead_copy
+            text: "JFK-Fahrten sind 1,93 % des Volumens, aber rund das Vierfache wert — mit starker Wochen- und Tagesschwankung."
+            copy: "Eine feste Flottenquote würde Montage und frühe Morgenstunden systematisch unterversorgen und Samstage überversorgen. Die Bereitstellung sollte dem Wochentag- und Uhrzeit-Muster folgen, nicht einem pauschalen Anteil."
+          - type: figures
+            items:
+              - {value: "1,93 %", label: "Anteil am Fahrtvolumen", sentiment: neutral}
+              - {value: "~4×", label: "Umsatz je Fahrt", sentiment: positive}
+              - {value: "1,35× / 0,75×", label: "Montag über, Samstag unter dem Wochenschnitt", sentiment: warning}
+
+  # ---------------------------------------------------------------------
+  - id: empfehlungen
+    nav_label: Empfehlungen
+    slides:
+      - id: empfehlungen-alle
+        views: [overview, storyview]
+        layout: wide
+        kicker: "Empfehlungen"
+        title: "Fünf Maßnahmen für die Flottenplanung"
+        subtitle: "Direkt aus den vier JFK-Findings abgeleitet"
+        content:
+          - type: recommendations
+            items:
+              - category: "1"
+                title: "Montags-Aufschlag"
+                points:
+                  - "Rund 35 % mehr JFK-Taxis als im Wochenschnitt."
+                  - "Montag stellt 20,61 % aller JFK-Fahrten, aber nur 15,24 % aller Fahrten (1,35×)."
+              - category: "2"
+                title: "Samstags-Reduktion"
+                points:
+                  - "Rund 25 % weniger JFK-Präsenz als im Wochenschnitt."
+                  - "Samstag stellt nur 11,38 % der JFK-Fahrten gegen 15,23 % aller Fahrten (0,75×)."
+              - category: "3"
+                title: "Frühschicht verdoppeln"
+                points:
+                  - "Zwischen 5 und 7 Uhr die JFK-Abdeckung gegenüber der allgemeinen Nachfrage verdoppeln."
+                  - "Der JFK-Anteil liegt in diesen Stunden rund 2× der allgemeinen Verkehrsquote — frühe Abflüge."
+              - category: "4"
+                title: "Abendspitze vorziehen"
+                points:
+                  - "Die JFK-Abendschicht auf 17:00 planen statt auf 18:00 wie im Gesamtnetz."
+                  - "Die JFK-eigene Spitze liegt eine Stunde vor der netzweiten Spitze."
+              - category: "5"
+                title: "Rückfahrten priorisieren"
+                points:
+                  - "NYC→JFK-Rückfahrten dem Leerstand-Repositionieren vorziehen."
+                  - "JFK-berührende Fahrten bringen rund 4× den Umsatz einer Durchschnittsfahrt."
+
+  # ---------------------------------------------------------------------
+  - id: grenzen
+    nav_label: Grenzen
+    slides:
+      - id: grenzen-alle
+        views: [storyview, techview]
+        layout: L6
+        kicker: "Grenzen"
+        title: "Was diese Analyse nicht leisten kann"
+        subtitle: "Aussagegrenzen, offen benannt"
+        content:
+          - type: box_grid
+            items:
+              - text: "<strong>Keine Stückzahl</strong><br>Der Datensatz enthält keine Flottengröße. Alle Empfehlungen sind relative Faktoren auf den Wochenschnitt, keine Taxi-Zahlen."
+                highlight: true
+              - text: "<strong>Ein Jahr, eine Stadt</strong><br>2016er Yellow-Taxi-Daten für NYC. Kein Trend über die Zeit, keine Übertragung auf andere Jahre oder Anbieter — Uber und Lyft fehlen."
+                highlight: false
+              - text: "<strong>Bounding-Box statt Polygon</strong><br>Das JFK-Rechteck greift am Rand angrenzende Straßen mit. Die JFK-Zahlen sind dadurch eher eine leichte Obergrenze."
+                highlight: false
+              - text: "<strong>Deskriptiv, nicht prognostisch</strong><br>Anteile und Muster im Bestand, kein Vorhersagemodell. Ob die Muster über 2016 hinaus gelten, zeigt erst neue Datenlage."
+                highlight: false
+
+  # ---------------------------------------------------------------------
+  - id: ende
+    nav_label: Ende
+    slides:
+      # Eine gemeinsame Closing-Slide für alle drei Views (kein Drift zwischen den Views).
+      # layout: split = Kopfzone wie die Titelslide, darunter zwei Spalten,
+      # Text links, Links/Buttons rechts.
+      - id: ende-closing
+        views: [overview, storyview, techview]
+        role: closing
+        layout: split
+        title: "NYC Taxi Routes"
+        subtitle: "Wie viele Taxis gehören an den Flughafen JFK?<br>Data-Analysis-Projekt | 2016"
+        closing_primary_link:
+          {label: "Notebooks durchsuchen", href: "../notebooks/", target: "_blank"}
+        closing_extra_links:
+          - {label: "LinkedIn-Profil", href: "https://www.linkedin.com/in/kaywiegand/", target: "_blank"}
+        content:
+          - type: statement
+            layout: lead_copy
+            text: "Eine Nische richtig einordnen"
+            copy: "1,93 % der Fahrten, rund das Vierfache an Wert, mit klarem Wochen- und Tagesrhythmus. Der Beitrag war nicht ein Modell, sondern die saubere Klassifikation und die Übersetzung der Muster in eine gewichtete Bereitstellung."
+
+# ===========================================================================
+view_meta:
+  overview:
+    project: "NYC Taxi Routes"
+    period: "2016"
+    author: "Kay Wiegand"
+    github: "kaywiegand/nyc-taxi-routes"
+    presentation_title: "Ergebnis & Empfehlungen"
+    audience: "Business · Stakeholder · Flottenplanung"
+    duration_minutes: 5
+  storyview:
+    project: "NYC Taxi Routes"
+    period: "2016"
+    author: "Kay Wiegand"
+    github: "kaywiegand/nyc-taxi-routes"
+    presentation_title: "Der komplette Projektverlauf"
+    audience: "Data Peers · Portfolio"
+    duration_minutes: 14
+  techview:
+    project: "NYC Taxi Routes"
+    period: "2016"
+    author: "Kay Wiegand"
+    github: "kaywiegand/nyc-taxi-routes"
+    presentation_title: "Technischer Deep Dive"
+    audience: "Data Scientists · Tech Leads · Interviewer"
+    duration_minutes: 9
+
+# ===========================================================================
+hub:
+  headline_kpis_from: einstieg-title-overview
+  tagline: "Wie viele Taxis gehören an den Flughafen JFK?"
+  subtitle: "Data-Analysis-Projekt"
+  footer_tagline: "NYC · Yellow Taxi · Flottenplanung JFK"
+  about:
+    - label: "Motivation"
+      text: "Ein NYC-Taxiunternehmer plant seine Flotte und will wissen, wie viele Fahrzeuge an den Flughafen JFK gehören. JFK liegt weit vom Zentrum — wer dort absetzt, wartet lange auf die nächste Fahrt, dafür fahren JFK-Gäste längere, lukrativere Strecken."
+    - label: "Kernfrage"
+      text: "Wie groß ist das JFK-Geschäft im Vergleich zum Gesamtvolumen, wie viel Umsatz hängt daran, und wie stark schwankt die Nachfrage über Wochentag und Uhrzeit? <strong>1,93 % der Fahrten</strong> starten am JFK, sie bringen aber rund <strong>10 % des Fahrpreis-Umsatzes</strong> — etwa das Vierfache je Fahrt."
+    - label: "Vorgehen"
+      text: "Jede der 293.369 bereinigten Fahrten wird über zwei Bounding-Boxes klassifiziert (JFK / NYC / Other) und einem von neun Routentypen zugeordnet. Darauf setzen die Auswertungen zu Umsatzanteil, Wochentag- und Stundenverteilung auf."
+    - label: "Ergebnis & Grenzen"
+      text: "JFK ist eine kleine, aber überproportional wertvolle Nische mit klarem Wochen- und Tagesrhythmus — Montag 1,35× über, Samstag 0,75× unter dem Schnitt, JFK-Abendspitze 17:00 statt 18:00. Der Datensatz enthält keine Flottengröße, deshalb sind alle Empfehlungen relative Faktoren, keine Stückzahlen."
+  quick_links:
+    - {href: "../notebooks/", label: "Notebooks"}
+  view_order: [overview, techview, storyview]
+  view_cards:
+    overview:
+      kicker: "Overview"
+      label: "Basic Information"
+      description: "Ergebnis und Handlungsempfehlungen für die Flottenplanung. Die kürzeste Fassung, ohne Methodik."
+      badge: "Business"
+      badge_class: blue
+    techview:
+      kicker: "Tech View"
+      label: "Technical Insights"
+      description: "Datenbereinigung, Geo-Klassifikation über Bounding-Boxes und methodische Entscheidungen. Ohne Business-Empfehlungen."
+      badge: "Data Science"
+      badge_class: dark
+    storyview:
+      kicker: "Story View"
+      label: "Detailed Description"
+      description: "Der gesamte Weg von den Rohdaten über die Routen-Klassifikation bis zu den fünf Flotten-Empfehlungen. Portfolio-Vollansicht."
+      badge: "Portfolio"
+      badge_class: purple
+
+# ===========================================================================
+view_composition:
+  overview:
+    - einstieg
+    - problem
+    - routen
+    - analyse
+    - ergebnis
+    - empfehlungen
+    - ende
+
+  storyview:
+    - einstieg
+    - problem
+    - daten
+    - routen
+    - methodik
+    - analyse
+    - ergebnis
+    - empfehlungen
+    - grenzen
+    - ende
+
+  techview:
+    - einstieg
+    - daten
+    - routen
+    - methodik
+    - grenzen
+    - ende

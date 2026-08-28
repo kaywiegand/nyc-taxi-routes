@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!--
+  SLIDES TEMPLATE — Workspace Portfolio
+  ======================================
+  Basis für /project-case (generate_html_from_json.py).
+  Enthält NUR Gerüst: Reveal.js CDN · Slide-Theme-Link · JS-Navigation.
+  KEIN inline-CSS und KEIN Projektinhalt.
+
+  Single source of truth für das Slide-Design:
+    public/css/slides.css                              (Theme + alle Komponenten)
+    docs/portfolio/templates/styleguide.html           (visuelle Referenz aller Bausteine)
+
+  Platzhalter (vom Generator ersetzt): der Projekt-Titel im title-Tag
+  und der Slides-Platzhalter-Kommentar im body. (Token hier bewusst nicht
+  literal genannt, damit der naive String-Replace nur den body trifft.)
+-->
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYC Taxi Routes</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css">
+  <link rel="stylesheet" href="css/slides.css?v=1787900323">
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<!-- Chapter: Einstieg -->
+<section class="title-slide title-split" data-background="#3E4A5C" data-chapter="0" data-chapter-label="Titel"><div class="slide-head"><h2>NYC Taxi Routes</h2><p class="subline">Wie viele Taxis gehören an den Flughafen JFK?<br>Data-Analysis-Projekt | 2016</p></div><div class="content-zone"><div class="title-split-cols"><div class="title-split-left"><div class="view-teaser"><div class="view-teaser-heading">Technical Insights</div><p class="view-teaser-desc">Datenbereinigung, Geo-Klassifikation über Bounding-Boxes und methodische Entscheidungen. Ohne Business-Empfehlungen.</p></div><div class="closing-links title-cta"><span class="c-link" onclick="Reveal.next()">Start</span></div></div><div class="title-split-right"><div class="kpi-row"><div class="kpi red"><div class="v">6.631</div><div class="l">Zeilen über Fehler- und Scope-Masken entfernt</div></div><div class="kpi"><div class="v">2</div><div class="l">Bounding-Boxes klassifizieren jede Fahrt</div></div><div class="kpi"><div class="v">9</div><div class="l">mögliche Routentypen</div></div><div class="kpi green"><div class="v">0</div><div class="l">Fehler-Outputs in 5 Notebooks</div></div></div></div></div></div></section><section data-chapter="0" data-chapter-label="Agenda"><div class="agenda-cols"><div class="agenda-head"><span class="slide-kicker">Agenda</span><h2>Inhaltsübersicht</h2><p class="subline">Datenaufbereitung, Geo-Klassifikation und Methodik</p></div><div class="agenda-list"><div class="ag-item"><span class="ag-num">1</span><span class="ag-label">Daten und Bereinigung</span></div><div class="ag-item"><span class="ag-num">2</span><span class="ag-label">Routen-Klassifikation</span></div><div class="ag-item"><span class="ag-num">3</span><span class="ag-label">Geo-Bounds und Methodik</span></div><div class="ag-item"><span class="ag-num">4</span><span class="ag-label">Grenzen</span></div></div></div></section><!-- Chapter: Daten -->
+<section data-chapter="1" data-chapter-label="Daten"><div class="slide-head"><span class="slide-kicker">Daten</span><h2>Ein Datensatz, 2016er Yellow-Taxi-Fahrten</h2><p class="subline">Aufbereiteter CSV-Auszug aus dem StackFuel-Übungsprojekt</p></div><div class="content-zone"><table><thead><tr><th>Schritt</th><th>Umfang</th><th>Anmerkung</th></tr></thead><tbody><tr><td>Rohdaten</td><td>300.000 Zeilen × 12 Spalten</td><td>eine Zeile je Fahrt, NYC 2016</td></tr><tr><td>Bereinigt</td><td>293.369 Zeilen</td><td>6.631 Zeilen über Fehler- und Scope-Masken entfernt</td></tr><tr class="hl-green"><td>Klassifiziert</td><td>293.369 × +3 Spalten</td><td>Abfahrtsgebiet, Ankunftsgebiet und Routentyp je Fahrt</td></tr></tbody></table><blockquote class="statement wide">Keine Fahrzeug-IDs, keine Flottengröße. Jede Empfehlung ist ein relativer Faktor auf den Wochenschnitt, keine Stückzahl.</blockquote></div></section><section data-chapter="1" data-chapter-label="Daten"><div class="slide-head"><span class="slide-kicker">Daten</span><h2>Messfehler von Geschäfts-Scope getrennt</h2><p class="subline">Zwei Arten von Masken, unterschiedlich begründet</p></div><div class="content-zone"><div class="box-grid" style="grid-template-columns: repeat(3, 1fr)"><div class="box-item highlight"><strong>Messfehler — unmögliche Werte</strong><br>Koordinaten außerhalb NYC, negative oder Null-Fahrpreise, lange Distanz bei Near-Zero-Fahrpreis (Sensordefekt), unplausible Passagierzahl. Technisch falsch, deshalb raus.</div><div class="box-item"><strong>Geschäfts-Scope — plausibel, aber außerhalb</strong><br>Fahrpreise über 250 $, Extremdistanzen. Echte Fahrten, aber nicht Teil des Alltagsgeschäfts, um das es hier geht.</div><div class="box-item"><strong>24 exakte Duplikate</strong><br>Vollständig identische Zeilen, ersatzlos entfernt.</div></div><blockquote class="statement wide">6.631 Zeilen entfernt, 2,2 % der Rohdaten. Klein genug, um die Verteilungen nicht zu verzerren, groß genug, um die Extremwerte aus den Kennzahlen zu halten.</blockquote></div></section><section data-chapter="1" data-chapter-label="Daten"><div class="slide-head"><span class="slide-kicker">Daten</span><h2>Abgeleitete Spalten für die Analyse</h2><p class="subline">features/engineering.py — Geo, Ökonomie, Zeit</p></div><div class="content-zone"><table><thead><tr><th>Gruppe</th><th>Spalten</th><th>Zweck</th></tr></thead><tbody><tr class="hl-green"><td>Geo-Route</td><td>departure · arrival · route</td><td>Bounding-Box-Klassifikation je Fahrt</td></tr><tr><td>Ökonomie</td><td>total_yield · price_per_mile</td><td>Ertrag je Fahrt und je Meile</td></tr><tr><td>Zeit</td><td>time_slot · is_weekend</td><td>Tagesabschnitt und Wochenende</td></tr><tr><td>Verteilung</td><td>log-Transformierte der schiefen Numerik</td><td>robustere Vergleiche</td></tr></tbody></table><blockquote class="statement wide">Die Klassifikations- und Ökonomie-Spalten tragen die gesamte spätere Analyse. Sie entstehen einmal in der Preparation und werden exportiert.</blockquote></div></section><!-- Chapter: Routen -->
+<section data-chapter="2" data-chapter-label="Routen"><div class="slide-head"><span class="slide-kicker">Routen</span><h2>Neun Routentypen aus zwei Gebieten</h2><p class="subline">Jede Fahrt bekommt ein Abfahrts- und ein Ankunftsgebiet: JFK, NYC oder Other</p></div><div class="content-zone"><div class="chart-cols chart-cols-reverse"><div class="chart-cols-img chart-cols-img-large"><a href="img/route_distribution_log.png" target="_blank"><img src="img/route_distribution_log.png" alt="Fahrten je Routentyp, logarithmische Skala"></a></div><div class="chart-cols-head"><p class="chart-cols-caption">Jede Fahrt wird über zwei Bounding-Boxes klassifiziert: liegt der Punkt in der JFK-Box, in der NYC-Box oder außerhalb.<br><br>Die Fahrtenzahl ist logarithmisch aufgetragen, weil NYC→NYC alle anderen Routentypen um Größenordnungen übersteigt.</p></div></div></div></section><section data-chapter="2" data-chapter-label="Routen"><div class="slide-head"><span class="slide-kicker">Routen</span><h2>Wo die Fahrten beginnen</h2><p class="subline">Pickup- und Dropoff-Punkte, klassifiziert nach JFK / NYC / Other</p></div><div class="content-zone"><div class="chart-cols chart-cols-reverse"><div class="chart-cols-img chart-cols-img-large"><a href="img/pickup_locations_map.png" target="_blank"><img src="img/pickup_locations_map.png" alt="Pickup- und Dropoff-Standorte in NYC"></a></div><div class="chart-cols-head"><p class="chart-cols-caption">Die Masse der Punkte liegt in Manhattan und den inneren Boroughs. Der JFK bildet einen kompakten, klar abgesetzten Cluster im Südosten.<br><br>Diese räumliche Trennung ist der Grund, warum ein einfaches Rechteck für die Klassifikation ausreicht.</p></div></div></div></section><!-- Chapter: Methodik -->
+<section data-chapter="3" data-chapter-label="Methodik"><div class="slide-head"><span class="slide-kicker">Methodik</span><h2>Klassifikation über Bounding-Boxes</h2><p class="subline">nyc_taxi_routes.utils.JFK / .NYC — zentral definiert, nicht in Notebooks dupliziert</p></div><div class="content-zone"><table><thead><tr><th>Gebiet</th><th>Breitengrad</th><th>Längengrad</th><th>Zweck</th></tr></thead><tbody><tr class="hl-green"><td>JFK</td><td>40,627 – 40,660</td><td>−73,808 – −73,766</td><td>Flughafen-Rechteck, rund 3,7 km Kantenlänge</td></tr><tr><td>NYC</td><td>40,577 – 40,918</td><td>−74,150 – −73,700</td><td>Metropolregion</td></tr><tr><td>Other</td><td>außerhalb beider Boxen</td><td>—</td><td>alles Übrige</td></tr></tbody></table><blockquote class="statement wide">Ein Rechteck ist eine grobe Näherung an das Flughafengelände. Es fasst die Terminal-Vorfahrten sicher, greift am Rand aber auch angrenzende Straßen mit — bewusst in Kauf genommen für eine reproduzierbare, an einer Stelle nachlesbare Regel.</blockquote></div></section><section data-chapter="3" data-chapter-label="Methodik"><div class="slide-head"><span class="slide-kicker">Methodik</span><h2>Deskriptiv, relativ, reproduzierbar</h2><p class="subline">Drei bewusste Entscheidungen zum Vorgehen</p></div><div class="content-zone"><div class="myth-rows"><div class="myth-row-pair"><div class="myth-assume"><span class="myth-label">Annahme: Ergebnisform</span><div class="myth-text">Eine konkrete Taxi-Stückzahl für den JFK.</div></div><div class="myth-arrow">→</div><div class="myth-finding"><span class="myth-label">Befund: Ergebnisform</span><div class="myth-text">Gewichtungsfaktoren auf den Wochenschnitt — der Datensatz enthält keine Flottengröße.</div></div></div><div class="myth-row-pair"><div class="myth-assume"><span class="myth-label">Annahme: Methode</span><div class="myth-text">Ein Vorhersagemodell mit Train/Test-Split.</div></div><div class="myth-arrow">→</div><div class="myth-finding"><span class="myth-label">Befund: Methode</span><div class="myth-text">Eine Bestandsaufnahme von Anteilen und Zeitmustern in den 2016er Daten.</div></div></div><div class="myth-row-pair"><div class="myth-assume"><span class="myth-label">Annahme: Klassifikation</span><div class="myth-text">Ein exaktes Flughafen-Polygon.</div></div><div class="myth-arrow">→</div><div class="myth-finding"><span class="myth-label">Befund: Klassifikation</span><div class="myth-text">Eine Bounding-Box — grob, aber zentral definiert und reproduzierbar.</div></div></div></div><blockquote class="statement wide">Die Frage ist eine Anteils- und Verteilungsfrage, keine Prognose. Jede Vereinfachung ist dokumentiert und im Code an einer Stelle nachlesbar.</blockquote></div></section><!-- Chapter: Grenzen -->
+<section data-chapter="4" data-chapter-label="Grenzen"><div class="slide-head"><span class="slide-kicker">Grenzen</span><h2>Was diese Analyse nicht leisten kann</h2><p class="subline">Aussagegrenzen, offen benannt</p></div><div class="content-zone"><div class="box-grid" style="grid-template-columns: repeat(4, 1fr)"><div class="box-item highlight"><strong>Keine Stückzahl</strong><br>Der Datensatz enthält keine Flottengröße. Alle Empfehlungen sind relative Faktoren auf den Wochenschnitt, keine Taxi-Zahlen.</div><div class="box-item"><strong>Ein Jahr, eine Stadt</strong><br>2016er Yellow-Taxi-Daten für NYC. Kein Trend über die Zeit, keine Übertragung auf andere Jahre oder Anbieter — Uber und Lyft fehlen.</div><div class="box-item"><strong>Bounding-Box statt Polygon</strong><br>Das JFK-Rechteck greift am Rand angrenzende Straßen mit. Die JFK-Zahlen sind dadurch eher eine leichte Obergrenze.</div><div class="box-item"><strong>Deskriptiv, nicht prognostisch</strong><br>Anteile und Muster im Bestand, kein Vorhersagemodell. Ob die Muster über 2016 hinaus gelten, zeigt erst neue Datenlage.</div></div></div></section><!-- Chapter: Ende -->
+<section class="closing" data-background="#3E4A5C" data-chapter="5" data-chapter-label="Ende"><div class="slide-head"><h2>NYC Taxi Routes</h2><p class="subline">Wie viele Taxis gehören an den Flughafen JFK?<br>Data-Analysis-Projekt | 2016</p></div><div class="content-zone"><div class="closing-split"><div class="closing-split-left"><div class="text-lead-copy"><p class="lead">Eine Nische richtig einordnen</p><p class="copy">1,93 % der Fahrten, rund das Vierfache an Wert, mit klarem Wochen- und Tagesrhythmus. Der Beitrag war nicht ein Modell, sondern die saubere Klassifikation und die Übersetzung der Muster in eine gewichtete Bereitstellung.</p></div><div class="closing-links"><a href="../notebooks/" class="c-link" target="_blank">Notebooks durchsuchen</a></div></div><div class="closing-split-right"><div class="closing-links closing-links-col"><a href="index.html" class="c-link" target="_self">Zur Übersicht</a><a href="https://github.com/kaywiegand/nyc-taxi-routes" class="c-link" target="_blank">GitHub-Repo</a><a href="https://www.linkedin.com/in/kaywiegand/" class="c-link" target="_blank">LinkedIn-Profil</a></div></div></div></div></section>
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<div id="nav-prev" class="nav-arrow" title="Zurück">←</div>
+<div id="slideticks"></div>
+<div id="nav-next" class="nav-arrow" title="Weiter">→</div>
+<div id="progress-track"><div id="progress-fill"></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  controls: false,
+  progress: false,
+  transition: 'slide',
+  transitionSpeed: 'fast',
+  margin: 0.07,
+  width: 1024,
+  height: 720,
+  // center:false — Reveal zentriert sonst jede Slide vertikal als Ganzes (Default: true),
+  // was mit der festen Kopfzone/Content-Zone kollidiert: Titel sitzen je nach Content-Menge
+  // unterschiedlich hoch statt an der fixen Kopfzonen-Position (Styleguide v2 §2).
+  center: false
+});
+
+// Custom bottom navigation: slide ticks + progress bar
+const slides = Array.from(document.querySelectorAll('.reveal .slides > section'));
+const total = slides.length;
+const progressFill = document.getElementById('progress-fill');
+const tickContainer = document.getElementById('slideticks');
+
+// Detect chapter-start slides via data-chapter-label attribute
+const chapterStarts = {};
+slides.forEach((section, i) => {
+  if (section.hasAttribute('data-chapter-label')) {
+    chapterStarts[i] = section.dataset.chapterLabel;
+  }
+});
+
+// Build tick elements
+for (let i = 0; i < total; i++) {
+  const wrap = document.createElement('div');
+  wrap.className = 'stk-wrap';
+  if (chapterStarts.hasOwnProperty(i)) {
+    wrap.classList.add('stk-chapter');
+    const lbl = document.createElement('span');
+    lbl.className = 'stk-ch-label';
+    lbl.textContent = chapterStarts[i];
+    wrap.appendChild(lbl);
+  }
+  const line = document.createElement('span');
+  line.className = 'stk';
+  const num = document.createElement('span');
+  num.className = 'stk-num';
+  num.textContent = i + 1;
+  wrap.appendChild(line);
+  wrap.appendChild(num);
+  tickContainer.appendChild(wrap);
+}
+
+const ticks = tickContainer.querySelectorAll('.stk-wrap');
+
+// Click a tick (or its number) to jump straight to that slide
+ticks.forEach((t, i) => t.addEventListener('click', () => Reveal.slide(i)));
+
+// Prev / next arrows flanking the tick bar
+const prevArrow = document.getElementById('nav-prev');
+const nextArrow = document.getElementById('nav-next');
+prevArrow.addEventListener('click', () => Reveal.prev());
+nextArrow.addEventListener('click', () => Reveal.next());
+
+function updateNav() {
+  const idx = Reveal.getState().indexh;
+  ticks.forEach((t, i) => {
+    t.classList.remove('stk-past', 'stk-current');
+    if (i === idx) t.classList.add('stk-current');
+    else if (i < idx) t.classList.add('stk-past');
+  });
+  // Invert nav colors on dark title / closing slides
+  const current = slides[idx];
+  document.body.classList.toggle('nav-invert', !!current && (current.classList.contains('title-slide') || current.classList.contains('closing')));
+  // Only show the arrow that can actually navigate
+  prevArrow.classList.toggle('nav-hidden', idx === 0);
+  nextArrow.classList.toggle('nav-hidden', idx === total - 1);
+  requestAnimationFrame(() => {
+    const track = document.getElementById('progress-track');
+    const tick = ticks[idx];
+    if (!track || !tick) return;
+    const stkLine = tick.querySelector('.stk');
+    if (!stkLine) return;
+    const trackRect = track.getBoundingClientRect();
+    const stkRect = stkLine.getBoundingClientRect();
+    const centerX = stkRect.left + stkRect.width / 2;
+    const pct = trackRect.width > 0
+      ? Math.max(0, Math.min(100, (centerX - trackRect.left) / trackRect.width * 100))
+      : 0;
+    progressFill.style.width = pct + '%';
+  });
+}
+
+Reveal.on('slidechanged', updateNav);
+Reveal.on('ready', updateNav);
+updateNav();
+</script>
+</body>
+</html>
