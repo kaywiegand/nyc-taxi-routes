@@ -97,6 +97,8 @@
 
 **Deploy:** `HEAD:main` gepusht (Fast-Forward `e2ead39..93a38b4`, Kay explizit „auf main"). `pages.yml` lief zum ersten Mal, Deploy nach ~2 min durch. Verifiziert: Hub, alle 3 Views, `css/slides.css`, `img/*.png` → HTTP 200.
 
+**Nachtrag — Hero-Zeile aufs Portfolio-Muster (Kay):** Frage → Nominalphrase. Zeile 1 „Nachfrage- und Routenanalyse für die JFK-Flottenplanung", Zeile 2 „Data-Analysis-Projekt mit Routen-Klassifikation | 300.000 Taxifahrten, NYC 2016". Muss an vier Stellen gleich sein (Hub, 3 Title-Slides, Closing) — gesteuert über `hub.tagline`/`hub.subtitle` + `view_meta.<view>.period` (Title-Slides, vom Generator erzwungen) + `portfolio.md` `period` (Hub) + Closing-`subtitle`-String. `public/archive/v2+` ab jetzt gitignored (nur `v1` als Referenz-Stub). Commit `fbc6bdb`, live verifiziert.
+
 **Nächster Schritt:** `docs/PROJECTS.md` — Portfolio-Status auf `✅ portfolio-ready`.
 
 ---
