@@ -13,8 +13,8 @@
 | Typ | DA — Data Analysis |
 | Herkunft | StackFuel Übungsprojekt (Modul 2 / Kapitel 7) — Original-Aufgabenstellung: [`docs/infos.md`](docs/infos.md) |
 | Erstellt | 2026-04-21 (ursprünglicher Scaffold) · Fundament-Nachzug 2026-07-11 |
-| Status | 🟢 Portfolio-Case gebaut — slides.yaml + 3 Views + Hub live im Repo, Pages-Deploy wartet auf Merge nach `main` |
-| Nächster Schritt | Branch `claude/nyc-taxi-portfolio-setup-84c0b9` nach `main` mergen → `pages.yml` deployt → `https://kaywiegand.github.io/nyc-taxi-routes/` prüfen |
+| Status | 🟢 Portfolio-Case live — slides.yaml + 3 Views + Hub auf `main`, GitHub Pages unter `https://kaywiegand.github.io/nyc-taxi-routes/` (HTTP 200) |
+| Nächster Schritt | Portfolio-Status in `docs/PROJECTS.md` auf `✅ portfolio-ready` setzen; optional `/project-case audit-communication` |
 
 ---
 
@@ -95,8 +95,8 @@
 - `uv.lock` ergänzt (Lockfile gehört laut `.gitignore` in Git).
 - Commit `1afe6dd` auf `claude/nyc-taxi-portfolio-setup-84c0b9`, gepusht.
 
-**Offen:** Pages-URL noch 404 — `pages.yml` triggert nur auf `push` zu `main`. Nach Merge des Branches läuft der Deploy, dann `https://kaywiegand.github.io/nyc-taxi-routes/` auf 200 prüfen (BACKLOG #10).
+**Deploy:** `HEAD:main` gepusht (Fast-Forward `e2ead39..93a38b4`, Kay explizit „auf main"). `pages.yml` lief zum ersten Mal, Deploy nach ~2 min durch. Verifiziert: Hub, alle 3 Views, `css/slides.css`, `img/*.png` → HTTP 200.
 
-**Nächster Schritt:** Branch nach `main` mergen, Pages-Deploy abwarten, URL verifizieren.
+**Nächster Schritt:** `docs/PROJECTS.md` — Portfolio-Status auf `✅ portfolio-ready`.
 
 ---
