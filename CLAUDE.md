@@ -16,9 +16,21 @@
 
 ## Kontext-Einstieg
 
-1. `PROCESS_LOG.md` lesen — aktueller Projektstand
-2. `ROADMAP.md` lesen — offene Phasen und Tasks
-3. Globale `CLAUDE.md` aus `/Users/kaywiegand/Workspace/` gilt weiterhin
+**Pflicht-Lesen, kein Skip — auch wenn die Session direkt in diesem Ordner startet:**
+
+1. `/Users/kaywiegand/Workspace/CLAUDE.md` — globale Arbeitsanweisungen
+2. `/Users/kaywiegand/Workspace/docs/personal/STYLE.md` — Kommunikationsregeln (u. a. keine Emojis)
+3. `/Users/kaywiegand/Workspace/docs/CONVENTIONS.md` — Notebook-Konventionen, Wording, **Zahlenformat nach Sprache**
+4. `PROCESS_LOG.md` — aktueller Projektstand
+5. `ROADMAP.md` — offene Phasen und Tasks
+
+**Zusätzlich vor Portfolio-Arbeit** (`/project-case slides` oder `report`):
+
+6. `/Users/kaywiegand/Workspace/wgnd-skills/project-case/build-pipeline.md`, Abschnitte **1c** (Content-Item-Schema) und **1d** (Title- und Closing-Slides)
+
+Grund für die explizite Auflistung (2026-08-28): Die Pflicht-Lesen-Liste in der globalen
+`CLAUDE.md` greift nur, wenn die Session im Workspace-Root startet. Startet sie im Projekt,
+wird sie übersprungen — genau so entstand die Schema-Drift im Telefonica-Case.
 
 ## Projektspezifische Hinweise
 
