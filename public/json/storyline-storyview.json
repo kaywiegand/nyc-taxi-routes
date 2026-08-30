@@ -9,7 +9,7 @@
     "duration_minutes": 14,
     "closing_links": [
       {
-        "href": "../notebooks/",
+        "href": "https://github.com/kaywiegand/nyc-taxi-routes/tree/main/notebooks",
         "label": "Notebooks"
       }
     ]
@@ -698,7 +698,7 @@
           "subtitle": "Nachfrage- und Routenanalyse für die JFK-Flottenplanung<br>Data-Analysis-Projekt mit Routen-Klassifikation | 300.000 Taxifahrten, NYC 2016",
           "closing_primary_link": {
             "label": "Notebooks durchsuchen",
-            "href": "../notebooks/",
+            "href": "https://github.com/kaywiegand/nyc-taxi-routes/tree/main/notebooks",
             "target": "_blank"
           },
           "closing_extra_links": [

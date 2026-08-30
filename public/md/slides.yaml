@@ -462,7 +462,7 @@ chapters:
         title: "NYC Taxi Routes"
         subtitle: "Nachfrage- und Routenanalyse für die JFK-Flottenplanung<br>Data-Analysis-Projekt mit Routen-Klassifikation | 300.000 Taxifahrten, NYC 2016"
         closing_primary_link:
-          {label: "Notebooks durchsuchen", href: "../notebooks/", target: "_blank"}
+          {label: "Notebooks durchsuchen", href: "https://github.com/kaywiegand/nyc-taxi-routes/tree/main/notebooks", target: "_blank"}
         closing_extra_links:
           - {label: "LinkedIn-Profil", href: "https://www.linkedin.com/in/kaywiegand/", target: "_blank"}
         content:
@@ -514,7 +514,7 @@ hub:
     - label: "Ergebnis & Grenzen"
       text: "JFK ist eine kleine, aber überproportional wertvolle Nische mit klarem Wochen- und Tagesrhythmus — Montag 1,35× über, Samstag 0,75× unter dem Schnitt, JFK-Abendspitze 17:00 statt 18:00. Der Datensatz enthält keine Flottengröße, deshalb sind alle Empfehlungen relative Faktoren, keine Stückzahlen."
   quick_links:
-    - {href: "../notebooks/", label: "Notebooks"}
+    - {href: "https://github.com/kaywiegand/nyc-taxi-routes/tree/main/notebooks", label: "Notebooks"}
   view_order: [overview, techview, storyview]
   view_cards:
     overview:
